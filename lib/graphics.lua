@@ -20,9 +20,30 @@ function graphics:draw_splash()
   screen.font_face(64)
   self:text_center(64, 36, "SiLo", 0)
 
+  local width, height = 40, 20
+  print(width, height)
 
-  local buffer = screen.peek(44, 22, 40, 20)
-  screen.poke(1, 1, 40, 20, buffer)
+  local buffer = screen.peek(44, 22, width, height)
+
+  local scale = 3
+  local nu_buffer = ""
+
+  for y = 0, height-1 do
+    local row = ""
+    for x = 1, width do
+      local index = y*width + x
+      local char = string.sub(buffer, index, index)
+      for i = 1, scale do
+        row = (row .. char)
+      end
+    end
+    for i = 1, scale do
+      nu_buffer = (nu_buffer .. row)
+    end
+  end
+
+  screen.poke(1, 1, width * scale, height * scale, nu_buffer)
+
   self:teardown()  
 end
 
