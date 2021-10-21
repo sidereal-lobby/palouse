@@ -3,7 +3,40 @@ local graphics = {}
 
 function graphics.init()
   graphics.fps = 15
-print("graphics init")
+  graphics.buffer = "SiLo"
+end
+
+
+function graphics:draw_splash()
+  self:setup()
+  self:circle(8, 8, 8, 15)
+  self:circle(120, 8, 8, 15)
+  self:circle(120, 56, 8, 15)
+  self:circle(8, 56, 8, 15)
+  self:rect(0, 5, 128, 55, 15)
+  self:rect(5, 0, 118, 64, 15)
+  self:rect(44, 22, 1, 1, 0)
+  self:rect(84, 42, 1, 1, 0)
+  screen.font_face(64)
+  self:text_center(64, 36, "SiLo", 0)
+  self:teardown()  
+end
+
+function graphics:peek()
+  -- (128 / 2) - 20 = 44 
+  -- (128 / 2) + 20 = 84
+  -- (64 / 2) -  10 = 22
+  -- (64 / 2) + 10 = 42
+  self.buffer = screen.peek(44, 22, 40, 20)
+print(self.buffer)
+  self:teardown()  
+
+end
+
+function graphics:poke()
+  -- self:setup()
+  screen.poke(0, 0, 128, 64, self.buffer)
+  self:teardown()  
 end
 
 function graphics:draw_home()
@@ -28,6 +61,7 @@ function graphics:teardown()
   screen.update()
 end
 
+
 -- northern information
 -- graphics library
 
@@ -37,13 +71,7 @@ function graphics.init()
   screen.font_size(8)
 end
 
-function graphics:setup()
-  screen.clear()
-end
 
-function graphics:teardown()
-  screen.update()
-end
 
 function graphics:mlrs(x1, y1, x2, y2, l)
   screen.level(l or 15)

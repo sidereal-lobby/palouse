@@ -14,14 +14,18 @@ end
 function key(k, z)
   if z == 0 then return end
   if k == 1 then return end
-  if k == 2 then return end
-  if k == 3 then fn.rerun() end
+  if k == 2 then graphics:peek() return end
+  if k == 3 then graphics:poke() end
+  fn.screen_dirty(true)
 end
+
+fontsize = 8
 
 function enc(e, d)
   print(e, d)
 end
 
 function redraw()
-  graphics:draw_home()
+  -- graphics:draw_home()
+  graphics:draw_splash()
 end
