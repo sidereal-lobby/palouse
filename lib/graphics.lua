@@ -19,6 +19,10 @@ function graphics:draw_splash()
   self:rect(84, 42, 1, 1, 0)
   screen.font_face(64)
   self:text_center(64, 36, "SiLo", 0)
+
+
+  local buffer = screen.peek(44, 22, 40, 20)
+  screen.poke(1, 1, 40, 20, buffer)
   self:teardown()  
 end
 
@@ -35,7 +39,7 @@ end
 
 function graphics:poke()
   -- self:setup()
-  screen.poke(0, 0, 128, 64, self.buffer)
+  screen.poke(0, 0, 40, 20, self.buffer)
   self:teardown()  
 end
 
