@@ -19,7 +19,7 @@ Engine_Palouse : CroneEngine {
 
     this.addCommand("bps", "f", {|msg|
       ~bps = msg[1];
-    //("bps set to " ++ msg[1]).postln;
+      //("bps set to " ++ msg[1]).postln;
       Ndef(\bps).set(\bps, msg[1]);
     });
 
@@ -28,9 +28,10 @@ Engine_Palouse : CroneEngine {
       Ndef(\bps).set(\bps, msg[1] /60);
     });
 
-    // Echo
+    // Mix/Echo
     context.server.sync;
     ~delayBus = Bus.audio(context.server, 2);
+    ~mixBus = Bus.audio(context.server, 2);
     context.server.sync;
 
     Ndef(\delay, {|beats=0.1, lag=0.1, decay=3.7|
@@ -38,39 +39,53 @@ Engine_Palouse : CroneEngine {
       var delayTime = (beats / Ndef(\bps).max(0.1)).max(tr).lag(lag);
       var out = In.ar(~delayBus.index, 2);
       delayTime = SinOsc.kr(0.01, [0, pi/12], tr, delayTime + tr);
-      LeakDC.ar(CombC.ar(out, 2, delayTime, decay)).tanh;
+      Out.ar(~mixBus, LeakDC.ar(CombC.ar(out, 2, delayTime, decay)));
+    });
+    Ndef(\delay).group.moveToHead;
+
+    Ndef(\mix, { |gain=1, vol=1|
+      (In.ar(~mixBus, 2) * gain).tanh * vol;
     }).play;
+    Ndef(\mix).group.moveToTail;
 
     ("setup commands").postln;
     this.addCommand("create", "s", {|msg|
-      var name = msg[1];
+      fork {
+        var name = msg[1];
 
-      // create main ndef
-      Ndef(name, {|t_trig=0, note=48, volume=1, mod=0, lag=0|
-        var env = t_trig.lagud(0, 0.2) * volume;
-        note = note.lag(lag);
-        mod = mod.lag(lag);
-        SinOscFB.ar((note).midicps, mod, env) ! 2;
-      });
+        // create main ndef
+        Ndef(name, {|t_trig=0, note=48, volume=1, mod=0, lag=0|
+          var env = t_trig.lagud(0, 0.2) * volume;
+          note = note.lag(lag);
+          mod = mod.lag(lag);
+          SinOscFB.ar((note).midicps, mod, env) ! 2;
+        });
 
-      // set main ndef fade time
-      Ndef(name).(fadeTime: 2);
+        // create "channel strip" ndef
+        Ndef((name ++ \Strip).asSymbol, {
+          |volume=1, pan=0, delaySend=0, lag=1|
+          var delayOut;
+          var out = \in.ar(0 ! 2);
 
-      // create "channel strip" ndef
-      Ndef((name ++ \Strip).asSymbol, {
-        |volume=1, pan=0, delaySend=0, lag=1|
-        var delayOut;
-        var out = \in.ar(0 ! 2);
+          //out = LeakDC.ar(out, mul: volume.lag(lag));
+          out = Balance2.ar(out[0], out[1], pan.lag(lag)).tanh;
 
-        out = LeakDC.ar(out, mul: volume.lag(lag));
-        out = Balance2.ar(out[0], out[1], pan.lag(lag)).tanh;
+          Out.ar(~delayBus.index, out * delaySend.lag(lag));
+          Out.ar(~mixBus.index, out * volume.lag(lag));
+        });
 
-        Out.ar(~delayBus.index, out * delaySend);
-        out;
-      }).play;
+        // set main ndef fade time
+        Ndef(name).fadeTime = 2;
 
-      // plug main ndef into strip ndef
-      Ndef((name ++ \Strip).asSymbol) <<>.in Ndef(name);
+        // plug main ndef into strip ndef
+        Ndef((name ++ \Strip).asSymbol) <<>.in Ndef(name);
+
+        context.server.sync;
+
+        // move to head (so that they can properly feed buses)
+        Ndef((name ++ \Strip).asSymbol).group.moveToHead;
+        Ndef((name).asSymbol).group.moveToHead;
+      }
     });
 
     this.addCommand("free", "s", {|msg|
@@ -88,9 +103,9 @@ Engine_Palouse : CroneEngine {
     });
 
     this.addCommand("pan", "sf", {|msg|
-        ("lag for"+msg[1]+"set to"+msg[2]).postln;
+      ("lag for"+msg[1]+"set to"+msg[2]).postln;
       Ndef((msg[1] ++ "Strip").asSymbol).set(\pan, msg[2]);
-      });
+    });
 
     this.addCommand("lag", "sf", {|msg|
       Ndef((msg[1] ++ "Strip").asSymbol).set(\lag, msg[2]);
