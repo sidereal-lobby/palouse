@@ -44,7 +44,7 @@ Engine_Palouse : CroneEngine {
     Ndef(\delay).group.moveToHead;
 
     Ndef(\mix, { |gain=1, vol=1|
-      (In.ar(~mixBus, 2) * gain).tanh * vol.max(0).min(1);
+      (In.ar(~mixBus, 2) * gain.lag(0.1)).tanh * vol.lag(0.1).max(0).min(1);
     }).play;
     Ndef(\mix).group.moveToTail;
 
