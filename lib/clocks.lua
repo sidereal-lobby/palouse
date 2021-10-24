@@ -11,6 +11,7 @@ function clocks.redraw_clock()
       fn.screen_dirty(false)
       redraw()
     end
+    screen.ping()
     clock.sleep(1 / 15)
   end
 end

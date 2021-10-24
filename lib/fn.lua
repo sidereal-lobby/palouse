@@ -4,7 +4,6 @@ function fn.init()
   fn.id_counter = 1000
 end
 
-
 function fn.load_config()
   -- https://stackoverflow.com/a/41176826
   local file = "/home/we/dust/code/palouse/lib/config.lua"
