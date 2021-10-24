@@ -7,19 +7,19 @@ end
 function fn.load_config()
   -- https://stackoverflow.com/a/41176826
   local file = "/home/we/dust/code/palouse/lib/config.lua"
-  local data = {}
-  local apply, err = loadfile(file, "t", data)
+  config = {} -- global
+  local apply, err = loadfile(file, "t", config)
   if apply then
     apply()
     print("loading your config...")
-    tu.print(data)
+    tu.print(config)
   else
     print(err)
-    local apply, err = loadfile("/home/we/dust/code/palouse/lib/default-config.lua", "t", data)
+    local apply, err = loadfile("/home/we/dust/code/palouse/lib/default-config.lua", "t", config)
     if apply then
       apply()
       print("loading default config instead...")
-      tu.print(data)
+      tu.print(config)
     end
   end
   print("")
