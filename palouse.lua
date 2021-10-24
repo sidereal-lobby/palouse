@@ -9,6 +9,9 @@ function init()
   clocks.init()
   graphics.init()
   stage.init()
+  network.init()
+  network.init_clock()
+
   screen_dirty = true
   redraw_clock_id = clock.run(clocks.redraw_clock)
   fn.light_bonfire()
@@ -30,4 +33,8 @@ end
 
 function redraw()
   graphics:render()
+end
+
+function cleanup()
+  network:cleanup()
 end
