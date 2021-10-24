@@ -44,7 +44,7 @@ Engine_Palouse : CroneEngine {
     Ndef(\delay).group.moveToHead;
 
     Ndef(\mix, { |gain=1, vol=1|
-      (In.ar(~mixBus, 2) * gain).tanh * vol;
+      (In.ar(~mixBus, 2) * gain).tanh * vol.max(0).min(1);
     }).play;
     Ndef(\mix).group.moveToTail;
 
@@ -125,6 +125,14 @@ Engine_Palouse : CroneEngine {
 
     this.addCommand("delay_decay", "f", {|msg|
       Ndef(\delay).set(\decay, msg[1]);
+    });
+
+    this.addCommand("mix_gain", "f", {|msg|
+      Ndef(\mix).set(\gain, msg[1]);
+    });
+
+    this.addCommand("mix_vol", "f", {|msg|
+      Ndef(\mix).set(\vol, msg[1]);
     });
 
     this.addCommand("trig", "sf", {|msg|
