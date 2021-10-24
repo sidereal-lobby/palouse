@@ -1,9 +1,9 @@
 -- requires
-tu = require("tabutil")
+tu        = require("tabutil")
 
 -- includes
-clocks = include("lib/clocks")
-fn = include("lib/fn")
-graphics = include("lib/graphics")
-metadata = include("lib/metadata")
-oam = include("lib/oam")
+clocks    = include("lib/clocks")
+fn        = include("lib/fn")
+graphics  = include("lib/graphics")
+metadata  = include("lib/metadata")
+oam       = include("lib/oam")
