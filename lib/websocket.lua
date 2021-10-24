@@ -17,7 +17,6 @@ local socket = require"palouse/lib/socket"
 local bit = require"bit"
 local band, bor, bxor = bit.band, bit.bor, bit.bxor
 local shl, shr = bit.lshift, bit.rshift
-local seckey = "osT3F7mvlojIvf3/8uIsJQ=="
 
 local OPCODE = {
     CONTINUE = 0,
@@ -192,7 +191,7 @@ function _M:update()
 "Connection: Upgrade\r\n"..
 "Upgrade: websocket\r\n"..
 "Sec-WebSocket-Version: 13\r\n"..
-"Sec-WebSocket-Key: "..seckey.."\r\n\r\n")
+"Sec-WebSocket-Key: "..config.seckey.."\r\n\r\n")
             self.status = STATUS.CONNECTING
             self._length = 2
         elseif self._length>600 then
