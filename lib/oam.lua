@@ -19,8 +19,9 @@ The gate to all mysteries.
 
 local oam = {}
 
-function oam.new(data)
-  local o = setmetatable({}, { __index = o })
+function oam:new(data)
+  local o = setmetatable({}, { __index = oam })
+  o.id = fn.id("oam")
   o.exegesis = "The gate to all mysteries."
   o.major_version = 0
   o.minor_version = 0
@@ -28,6 +29,14 @@ function oam.new(data)
   o.data = data
   o.born = os.time() -- note: each ape norns speaks of different times
   return o
+end
+
+function oam:report()
+  print("")
+    print("~~~~~~~.~~~~~~~.~~~~~~~.~~~~~~~.")
+    tu.print(self)
+    print("~~~~~~~.~~~~~~~.~~~~~~~.~~~~~~~.")
+  print("")
 end
 
 return oam

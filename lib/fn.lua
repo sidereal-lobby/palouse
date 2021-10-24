@@ -1,5 +1,10 @@
 local fn = {}
 
+function fn.init()
+  fn.id_counter = 1000
+end
+
+
 function fn.load_config()
   -- https://stackoverflow.com/a/41176826
   local file = "/home/we/dust/code/palouse/lib/config.lua"
@@ -31,6 +36,12 @@ function fn.light_bonfire()
     print("lighting default bonfire...")
     include("palouse/lib/" .. "default-bonfire")
   end
+end
+
+function fn.id(prefix)
+  -- a servicable attempt creating unique ids
+  fn.id_counter = fn.id_counter + 1
+  return prefix .. "-" .. os.time(os.date("!*t")) .. "-" .. fn.id_counter
 end
 
 function fn.print(s)

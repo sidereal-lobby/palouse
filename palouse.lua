@@ -3,12 +3,13 @@
 include("lib/includes")
 
 function init()
+  fn.init()
+  fn.load_config()
   fn.print("P A L O U S E")
   clocks.init()
   graphics.init()
   screen_dirty = true
   redraw_clock_id = clock.run(clocks.redraw_clock)
-  fn.load_config()
   fn.light_bonfire()
 end
 
