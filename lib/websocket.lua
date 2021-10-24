@@ -13,7 +13,7 @@ usage:
     end
 ]]
 
-local socket = require"fcv/lib/socket"
+local socket = require"palouse/lib/socket"
 local bit = require"bit"
 local band, bor, bxor = bit.band, bit.bor, bit.bxor
 local shl, shr = bit.lshift, bit.rshift
