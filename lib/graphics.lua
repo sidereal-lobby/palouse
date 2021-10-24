@@ -1,9 +1,35 @@
 
 local graphics = {}
 
+local card = "   x " ..
+             "  x x" ..
+             " x  x" ..
+             "x   x" ..
+             "x   x" ..
+             "x   x" ..
+             "x   x" ..
+             "x   x" ..
+             "x   x" ..
+             "x  x " ..
+             "x x  " ..
+             " x   " 
+
+local card_sprite = {"","","","","",""}
+
+local card_y = {0,1,2,4,7,11}
+
+
 function graphics.init()
   graphics.fps = 15
   graphics.splash_bg = 15
+
+  local temp_card = ""
+  for i=1,#card do
+    local on = string.sub(card, i, i) ~= ' '
+    for i=1,6 do
+      card_sprite[i] = card_sprite[i] .. string.char(on and i or 0)
+    end
+  end
 end
 
 function graphics:render()
@@ -38,7 +64,28 @@ function graphics:is_home()
   return true -- just a stub for now
 end
 
+-- private for draw_cards()
+function card_sprite_color(idx)
+  local frame = clocks.redraw_frame % 86
+  frame = frame - 30
+
+  local distance = math.abs(idx - frame)
+  if distance > 4 then return 1 end
+  return 6 - distance
+end
+
+-- private for draw_home()
+function draw_cards()
+  for idx=1,32 do
+    local color = card_sprite_color(idx)
+    --local color = clocks.redraw_frame % 6 + 1
+    screen.poke(idx*4-5, 35 - card_y[color], 5, 12, card_sprite[color])
+  end
+end
+
 function graphics:draw_home()
+  draw_cards()
+
   self:text_right(128, 56, fn:get_name(), 15)
   self:text_right(128, 64, fn:get_version(), 15)
 end

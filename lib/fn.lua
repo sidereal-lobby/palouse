@@ -55,7 +55,8 @@ end
 
 function fn.screen_dirty(bool)
   if bool == nil then return screen_dirty end
-  screen_dirty = bool
+  --screen_dirty = bool
+  screen_dirty = true
   return screen_dirty
 end
 
