@@ -1,6 +1,6 @@
 # overview
 ## species
-organismic blueprint 
+organismic blueprint
 
 ## specimen
 instance of organism
@@ -9,7 +9,7 @@ instance of organism
 organism habitat
 
 # primordial ooze
-simplest species.  may conglomerate into collectives.
+simplest species. may aggregate into collectives.
 
 - [ ] comb filter
 - [ ] delay
@@ -20,3 +20,23 @@ simplest species.  may conglomerate into collectives.
 - [ ] impulse
 - [ ] crossfader
 - [ ] tanh
+- [ ] array/table (perhaps implemented as env)
+- [ ] note/degree -> cycle/period (TET, JI)
+- [ ] beat -> cycle/period (BPM, quavers, seconds)
+
+# aspirations
+- history always recorded (timestamps)
+- history is malleable and randomly accessible
+- repo provides only primordial species
+- complexity strictly emergent
+- global fossil record as single source of truth
+- collective lifeforms self-optimize blueprints
+- lifeforms reproduce (polyphony)
+- lifeforms mutate/evolve
+- species interact
+
+# DNA, blood, guts, bones
+- lua API to create, route, aggregate, control
+- primordial forms in subdir a la dronecaster
+- serializable biome history
+- global audio/control buffer (i.e. WAV), loose propriety via index range
