@@ -40,3 +40,7 @@ simplest species. may aggregate into collectives.
 - primordial forms in subdir a la dronecaster
 - serializable biome history
 - global audio/control buffer (i.e. WAV), loose propriety via index range
+
+# hypotheses
+## field assistant
+records and recalls history. states observations explicitly.
