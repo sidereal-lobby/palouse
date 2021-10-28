@@ -9,6 +9,8 @@ Engine_Palouse : CroneEngine {
   alloc {
     var luaOscAddr = NetAddr("localhost", luaOscPort);
 
+    "PUT A DONK ON IT".postln;
+
     palouse = Palouse.new(context.server, "/home/we/dust/code/palouse/sc/prime");
     palouse.primes.keys.do({ arg name;
 			("sending name: " ++ name).postln;
@@ -23,7 +25,10 @@ Engine_Palouse : CroneEngine {
       palouse.setBps(msg[1]/60);
     });
 
-    this.addCommand("create", "s", {|msg|
+    this.addCommand("create_prime", "ssii", {|msg|
+      palouse.createPrime(msg[1], msg[2], msg[3].asBoolean, msg[4].asBoolean) });
+
+    this.addCommand("create_shell", "s", {|msg|
       palouse.createShell(msg[1]) });
 
     this.addCommand("free", "s", {|msg|
@@ -31,6 +36,12 @@ Engine_Palouse : CroneEngine {
 
     this.addCommand("trig", "sf", {|msg|
       palouse.triggerShell(msg[1], msg[2]) });
+
+    this.addCommand("plug", "sss", {|msg|
+      palouse.plug(msg[1], msg[2], msg[3]) });
+
+    this.addCommand("set_param", "ssf", {|msg|
+      palouse.setParam(msg[1], msg[2], msg[3]) });
 
     [\note, \mod, \lag, \volume].do({|cmd|
       this.addCommand(cmd, "sf", {|msg|
@@ -68,6 +79,9 @@ Engine_Palouse : CroneEngine {
     this.addCommand("ape", "f", {|msg|
       Ndef(\ape).set(\ape, msg[1]);
     });
+
+    this.addCommand("query_nodes", "", {
+      palouse.queryNodes });
     // done commands
   }
 

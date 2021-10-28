@@ -2,6 +2,7 @@ local clocks = {}
 
 function clocks.init()
   clocks.redraw_frame = 0
+  clocks.redraw_clock_id = clock.run(clocks.redraw_clock)
 end
 
 function clocks.redraw_clock()
@@ -14,6 +15,11 @@ function clocks.redraw_clock()
     screen.ping()
     clock.sleep(1 / 15)
   end
+end
+
+
+function clocks.cleanup()
+  clock.cancel(clocks.redraw_clock_id)
 end
 
 return clocks

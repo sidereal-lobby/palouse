@@ -79,16 +79,56 @@ Palouse {
     }
   }
 
-  freeShell {|name|
-    // free main ndef
-    Ndef((name ++ \Strip).asSymbol).free;
+  createPrime {|ndefName, primeName, play=false, moveToHead=false|
+    var name = ndefName;
+    "creating prime Ndef".postln;
+    ("ndefName = "++ndefName++" (type "++ndefName.class++")").postln;
+    ("primeName = "++primeName++" (type "++primeName.class++")").postln;
 
-    // free "channel strip" ndef
-    Ndef((name ++ \Strip).asSymbol).free;
+    fork {
+      var fn = primes[primeName.asString];
+      ("prime class: "++fn.class).postln;
+
+      Ndef(name, fn);
+      Ndef(name).fadeTime = 2;
+
+      server.sync;
+
+      Ndef(name).postln;
+      Ndef(name).group.postln;
+      Ndef(name).numChannels.postln;
+
+      if (moveToHead && Ndef(name).group != nil, {
+        Ndef(name).group.moveToHead });
+
+      if (play, {
+        Ndef(name).play });
+
+      Ndef(name).postln;
+      Ndef(name).group.postln;
+      Ndef(name).numChannels.postln;
+    }
   }
 
-  setShellParam {|shell, param, value|
-    Ndef(shell).set(param, value);
+  freeShell {|name|
+    // free main ndef
+    Ndef(name).free;
+
+    // free "channel strip" ndef
+    Ndef(name ++ \Strip).free;
+  }
+
+  plug{|receiver, input, sender|
+    ("Ndef("++receiver++") <<>.("++input++") Ndef("++sender++")").postln;
+    ("Ndef("++receiver.class++") <<>.("++input.class++") Ndef("++sender.class++")").postln;
+    // I guess this is broken
+    // https://github.com/supercollider/supercollider/issues/5164
+    //Ndef(receiver) <<>.(input) Ndef(sender);
+    Ndef(receiver).set(input, Ndef(sender));
+  }
+
+  setParam {|ndef, param, value|
+    Ndef(ndef).set(param, value);
   }
 
   setShellStripParam {|shell, param, value|
@@ -110,5 +150,9 @@ Palouse {
 
   setBps{|bps|
     Ndef(\bps).set(\bps, bps);
+  }
+
+  queryNodes{
+    server.queryAllNodes
   }
 }

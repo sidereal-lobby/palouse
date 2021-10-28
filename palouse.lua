@@ -1,4 +1,5 @@
 -- palouse
+dawn = util.time()
 
 include("lib/includes")
 
@@ -13,8 +14,9 @@ function init()
   network.init_clock()
 
   screen_dirty = true
-  redraw_clock_id = clock.run(clocks.redraw_clock)
-  fn.light_bonfire()
+  --fn.light_bonfire() -- DON'T LIGHT MY FIRE!! - Otoboke Beaver
+
+  print("sunrise lasted "..string.format("%.4f", util.time()-dawn).." seconds")
 end
 
 function key(k, z)
@@ -36,5 +38,6 @@ function redraw()
 end
 
 function cleanup()
-  network:cleanup()
+  network.cleanup()
+  clocks.cleanup()
 end

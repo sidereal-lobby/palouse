@@ -82,7 +82,7 @@ end
 
 called_step = false
 
-function network:cleanup()
+function network.cleanup()
   print('cleaning up network...')
   -- assumes this module contains the only cpath tweak
   package.cpath = orig_cpath 
