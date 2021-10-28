@@ -1,0 +1,17 @@
+- [.] prime
+  - [ ] note -> hz (TET)
+  - [ ] note -> hz (JI) - LUT? only need 12 floats!
+  - [ ] degree -> note
+  - [.] DONK
+    - [X] whole thing
+    - [ ] standalone env
+    - [ ] standalone FM op
+  - [ ] comb filter
+- [ ] REPL
+  - [ ] record history for *every* action
+  - [ ] engine
+- [ ] historical record
+  - [ ] always recording
+  - [ ] randomly accessible
+- [ ] collective lifeforms
+  - [ ] aggregate params (auto-introspect?)
