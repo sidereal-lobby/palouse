@@ -1,3 +1,3 @@
-{|freq=1, mul=1|
-  Impulse.ar(freq, 0, mul)!2;
+{|freq=1, mul=1, phase, add|
+  Impulse.ar(freq, phase, mul, add)!2;
 }
