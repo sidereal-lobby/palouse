@@ -1,3 +1,16 @@
+/*
+NodeProxy.defaultNumAudio
+NodeProxy.defaultNumAudio = value
+From superclass: BusPlug
+Default number of channels when initializing in audio rate and no specific number is given (default: 2).
+
+NodeProxy.defaultNumControl
+NodeProxy.defaultNumControl = value
+From superclass: BusPlug
+Default number of channels when initializing in control rate and no specific number is given (default: 1).
+
+*/
+
 Palouse {
   var <primes, mixBus, delayBus, server;
 
@@ -79,7 +92,7 @@ Palouse {
     }
   }
 
-  createPrime {|ndefName, primeName, play=false, moveToHead=false|
+  createPrime {|primeName, ndefName, play=false, moveToHead=false|
     var name = ndefName;
     "creating prime Ndef".postln;
     ("ndefName = "++ndefName++" (type "++ndefName.class++")").postln;
@@ -88,6 +101,8 @@ Palouse {
     fork {
       var fn = primes[primeName.asString];
       ("prime class: "++fn.class).postln;
+
+      //fn.asSynthDef.allControlNames.postln;
 
       Ndef(name, fn);
       Ndef(name).fadeTime = 2;
@@ -104,9 +119,10 @@ Palouse {
       if (play, {
         Ndef(name).play });
 
-      Ndef(name).postln;
-      Ndef(name).group.postln;
-      Ndef(name).numChannels.postln;
+      // Ndef(name).postln;
+      // Ndef(name).group.postln;
+      // Ndef(name).numChannels.postln;
+
     }
   }
 
@@ -129,6 +145,10 @@ Palouse {
 
   setParam {|ndef, param, value|
     Ndef(ndef).set(param, value);
+  }
+
+  setParamLag {|ndef, param, lag|
+    Ndef(ndef).lag(param, lag);
   }
 
   setShellStripParam {|shell, param, value|
