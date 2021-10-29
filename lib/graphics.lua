@@ -76,18 +76,18 @@ end
 
 -- private for draw_home()
 function draw_cards()
-  for idx=1,32 do
+  for idx=1,16 do
     local color = card_sprite_color(idx)
     --local color = clocks.redraw_frame % 6 + 1
-    screen.poke(idx*4-5, 35 - card_y[color], 5, 12, card_sprite[color])
+    screen.poke(idx*4-5, 52 - card_y[color], 5, 12, card_sprite[color])
   end
 end
 
 function graphics:draw_home()
   draw_cards()
-
-  self:text_right(128, 56, fn:get_name(), 15)
-  self:text_right(128, 64, fn:get_version(), 15)
+  self:text_right(128, 48, fn.get_hash(), 15)
+  self:text_right(128, 56, fn.get_name(), 15)
+  self:text_right(128, 64, fn.get_version(), 15)
 end
 
 function graphics:setup()

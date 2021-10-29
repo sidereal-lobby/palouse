@@ -4,6 +4,17 @@ function fn.init()
   fn.id_counter = 1000
 end
 
+function fn.os_capture(cmd, raw)
+  local f = assert(io.popen(cmd, 'r'))
+  local s = assert(f:read('*a'))
+  f:close()
+  if raw then return s end
+  s = string.gsub(s, '^%s+', '')
+  s = string.gsub(s, '%s+$', '')
+  s = string.gsub(s, '[\n\r]+', ' ')
+  return s
+end
+
 function fn.load_config()
   -- https://stackoverflow.com/a/41176826
   local file = "/home/we/dust/code/palouse/lib/config.lua"
@@ -68,6 +79,11 @@ function fn.get_version()
   return metadata.version_major .. "." ..
          metadata.version_minor .. "." ..
          metadata.version_patch
+end
+
+function fn.get_hash()
+  local hash = fn.os_capture("cd /home/we/dust/code/palouse && git rev-parse HEAD")
+  return string.sub(hash, 1, 6)
 end
 
 function fn.rerun()
