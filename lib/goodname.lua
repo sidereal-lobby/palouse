@@ -5,15 +5,30 @@ local history_by_timestamp = {}
 local ndefs = {}
 local specimens = {}
 
--- two things I want RIGHT NOW:
+-- things I want RIGHT NOW:
 -- - immediate history recall (i.e. "bring me up to speed")
 -- - fluent API: .draw("s").freq(400)
--- - better fucking logging
+-- - better logging
+-- - low/high -> mul/add
 
 print("hello my name is good name and that is a GOOD NAME")
 
 function get_ts()
   return util.time() - dawn
+end
+
+function join(list, sep)
+  if not sep then sep = ", " end
+
+  local str = ""
+  for i=1,#list do
+    str = str .. list[i]
+    if i ~= #list then
+      str = str .. sep
+    end
+  end
+
+  return str
 end
 
 function expose(fn, name, redef)
@@ -86,13 +101,7 @@ end
 function g.list_events (index)
   for i=1,#history_by_index do
     local e = history_by_index[i]
-    local msg = "at "..string.format("%.4f",e.ts)..", "..e.name
-    if #e.args > 0 then
-      print(msg.." with args:")
-      tu.print(e.args)
-    else
-      print(msg..".")
-    end
+    print(string.format("%.4f",e.ts)..": "..e.name.."("..join(e.args)..")")
   end
 end
 
@@ -106,6 +115,11 @@ function create_shell(name)
   engine.create_shell(name)
 end
 
+-- play and move_to_head suck. confusing.
+-- .play is easy.
+-- for move_to_head, 
+-- try .duck() and .jump() instead
+-- w/ no arg = moveToHead. w/ arg = moveBefore, etc.
 local draw = function (ndef, name, play, move_to_head)
   if ndefs[ndef] == nil then
     ndefs[ndef] = {}
