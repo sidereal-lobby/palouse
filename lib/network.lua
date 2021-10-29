@@ -3,8 +3,8 @@ local network = {}
 -- cpath tweak for binary import
 local orig_cpath = package.cpath
 -- cpath must be set BEFORE including
-if not string.find(orig_cpath,"/home/we/dust/code/fcv/lib/") then
-  package.cpath=orig_cpath..";/home/we/dust/code/fcv/lib/?.so"
+if not string.find(orig_cpath,"/home/we/dust/code/palouse/lib/") then
+  package.cpath=orig_cpath..";/home/we/dust/code/palouse/lib/?.so"
 end
 local client = include("lib/websocket")
 
