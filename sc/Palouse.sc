@@ -60,52 +60,18 @@ Palouse {
     Ndef(\ape, {|ape, lag=0| ape.lag(0); });
   }
 
-  createShell {|name|
-    fork {
-      // create main ndef
-      Ndef(name, primes["donk"]);
-
-      // create "channel strip" ndef
-      Ndef((name ++ \Strip).asSymbol, {
-        |level=1, pan=0, send_delay=0, lag=1|
-        var delayOut;
-        var out = \in.ar(0 ! 2);
-
-        //out = LeakDC.ar(out, mul: volume.lag(lag));
-        out = Balance2.ar(out[0], out[1], pan.lag(lag)).tanh;
-
-        Out.ar(delayBus.index, out * send_delay.lag(lag));
-        Out.ar(mixBus.index, out * level.lag(lag));
-      });
-
-      // set main ndef fade time
-      Ndef(name).fadeTime = 2;
-
-      // plug main ndef into strip ndef
-      Ndef((name ++ \Strip).asSymbol) <<>.in Ndef(name);
-
-      server.sync;
-
-      // move to head (so that they can properly feed buses)
-      Ndef((name ++ \Strip).asSymbol).group.moveToHead;
-      Ndef((name).asSymbol).group.moveToHead;
-    }
-  }
-
-  createPrime {|primeName, ndefName, play=false, moveToHead=false|
+  make {|primeName, ndefName, play=false, moveToHead=false|
     var name = ndefName;
     "creating prime Ndef".postln;
     ("ndefName = "++ndefName++" (type "++ndefName.class++")").postln;
     ("primeName = "++primeName++" (type "++primeName.class++")").postln;
 
     fork {
-      var fn = primes[primeName.asString];
-      ("prime class: "++fn.class).postln;
-
       //fn.asSynthDef.allControlNames.postln;
 
-      Ndef(name, fn);
+      Ndef(name, primes[primeName.asString]);
       Ndef(name).fadeTime = 2;
+      //if (play, { Ndef(name).play });
 
       server.sync;
 
@@ -113,34 +79,54 @@ Palouse {
       Ndef(name).group.postln;
       Ndef(name).numChannels.postln;
 
-      if (moveToHead && Ndef(name).group != nil, {
-        Ndef(name).group.moveToHead });
-
-      if (play, {
-        Ndef(name).play });
-
-      // Ndef(name).postln;
-      // Ndef(name).group.postln;
-      // Ndef(name).numChannels.postln;
-
     }
   }
 
-  freeShell {|name|
-    // free main ndef
-    Ndef(name).free;
-
-    // free "channel strip" ndef
-    Ndef(name ++ \Strip).free;
+  // assume stereo output
+  play {|name|
+    var nd = Ndef(name);
+    ("playing ndef " ++ nd ++ " which has " ++ nd.numChannels ++ " channels").postln;
+    if (nd.numChannels == 2, {
+      ("playing ndef " ++ nd ++ "as-is").postln;
+      nd.play;
+    },{
+      var fn;
+      if (nd.numChannels == 1, {
+        ("playing ndef " ++ nd ++ " into panner").postln;
+        Ndef((name ++ "_pan").asSymbol, {|pan|
+          Pan2.ar(nd, pan);
+        }).play;
+      },{
+        ("playing ndef " ++ nd ++ " into splay").postln;
+        Ndef((name ++ "_splay").asSymbol, {|spread|
+          Splay.ar(nd, spread);
+        }).play;
+      });
+    });
   }
 
-  plug{|receiver, input, sender|
-    ("Ndef("++receiver++") <<>.("++input++") Ndef("++sender++")").postln;
-    ("Ndef("++receiver.class++") <<>.("++input.class++") Ndef("++sender.class++")").postln;
-    // I guess this is broken
-    // https://github.com/supercollider/supercollider/issues/5164
-    //Ndef(receiver) <<>.(input) Ndef(sender);
-    Ndef(receiver).set(input, Ndef(sender));
+  jump {|from, to|
+    Ndef(from).group.moveAfter(Ndef(to));
+  }
+
+  duck {|from, to|
+    Ndef(from).group.moveAfter(Ndef(to));
+  }
+
+  soar {|name|
+    Ndef(name).group.moveToHead;
+  }
+
+  sink {|name|
+    Ndef(name).group.moveToTail;
+  }
+
+  free {|name|
+    Ndef(name).free;
+  }
+
+  plug{|to, input, from|
+    Ndef(to).set(input, Ndef(from));
   }
 
   setParam {|ndef, param, value|
@@ -151,25 +137,18 @@ Palouse {
     Ndef(ndef).lag(param, lag);
   }
 
-  setShellStripParam {|shell, param, value|
-    Ndef((shell ++ "Strip").asSymbol).set(param, value);
+  trigger {|ndef, amp|
+    Ndef(ndef).set(\mul, amp);
+    Ndef(ndef).set(\t_trig, 1);
   }
 
-  setMixParam {|param, value|
-    Ndef(\mix).set(param, value);
-  }
-
-  setDelayParam {|param, value|
-    Ndef(\delay).set(param, value);
-  }
-
-  triggerShell {|shell, velocity|
-    Ndef(shell.asSymbol).set(\volume, velocity);
-    Ndef(shell.asSymbol).set(\t_trig, 1);
-  }
-
-  setBps{|bps|
+  setBps {|bps|
     Ndef(\bps).set(\bps, bps);
+  }
+
+  // useful?
+  start {
+    Ndef(\start).set(\t_trig, 1);
   }
 
   queryNodes{

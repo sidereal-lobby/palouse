@@ -1,5 +1,6 @@
 Engine_Palouse : CroneEngine {
   classvar luaOscPort = 10111;
+  classvar fnDir = "/home/we/dust/code/palouse/sc/prime";
   var palouse;
 
   *new { arg context, doneCallback;
@@ -9,40 +10,63 @@ Engine_Palouse : CroneEngine {
   alloc {
     var luaOscAddr = NetAddr("localhost", luaOscPort);
 
-    "PUT A DONK ON IT".postln;
-
-    palouse = Palouse.new(context.server, "/home/we/dust/code/palouse/sc/prime");
+    palouse = Palouse.new(context.server, fnDir);
     palouse.primes.keys.do({ arg name;
 			("sending name: " ++ name).postln;
 			luaOscAddr.sendMsg("/add_prime", name);
 		});
 
-    this.addCommand("bps", "f", {|msg|
-      palouse.setBps(msg[1]);
-    });
 
-    this.addCommand("bpm", "f", {|msg|
-      palouse.setBps(msg[1]/60);
-    });
+    // LIFECYCLE
+    this.addCommand("make", "ss",
+      {|msg| palouse.make(msg[1], msg[2]) });
 
-    this.addCommand("create_prime", "ssii", {|msg|
-      palouse.createPrime(msg[1], msg[2], msg[3].asBoolean, msg[4].asBoolean) });
+    this.addCommand("free", "s",
+      {|msg| palouse.free(msg[1]) });
 
-    this.addCommand("create_shell", "s", {|msg|
-      palouse.createShell(msg[1]) });
+    this.addCommand("play", "s",
+      {|msg| palouse.play(msg[1]) });
 
-    this.addCommand("free", "s", {|msg|
-      palouse.freeShell(msg[1]) });
 
-    this.addCommand("trig", "sf", {|msg|
-      palouse.triggerShell(msg[1], msg[2]) });
+    // ORDER
+    this.addCommand("jump", "ss",
+      {|msg| palouse.jump(msg[1], msg[2]) });
 
-    this.addCommand("plug", "sss", {|msg|
-      palouse.plug(msg[1], msg[2], msg[3]) });
+    this.addCommand("duck", "ss",
+      {|msg| palouse.duck(msg[1], msg[2]) });
 
-    this.addCommand("set_param", "ssf", {|msg|
-      palouse.setParam(msg[1], msg[2], msg[3]) });
+    this.addCommand("soar", "s",
+      {|msg| palouse.soar(msg[1]) });
 
+    this.addCommand("sink", "s",
+      {|msg| palouse.sink(msg[1]) });
+
+
+    // RELATIONSHIPS
+    this.addCommand("plug", "sss",
+      {|msg| palouse.plug(msg[1], msg[2], msg[3]) });
+
+
+    // BEHAVIOR
+    this.addCommand("set", "ssf",
+      {|msg| palouse.setParam(msg[1], msg[2], msg[3]) });
+
+    this.addCommand("trig", "sf",
+      {|msg| palouse.trigger(msg[1], msg[2]) });
+
+    this.addCommand("fade", "sf",
+      {|msg| palouse.setFade(msg[1], msg[2]) });
+
+    this.addCommand("lag", "ssf",
+      {|msg| palouse.setParamLag(msg[1], msg[2], msg[3]) });
+
+
+    // ENVIRONMENT
+    this.addCommand("bps", "f",
+      {|msg| palouse.setBps(msg[1]) });
+
+
+    // (obsolete)
     [\note, \mod, \lag, \volume].do({|cmd|
       this.addCommand(cmd, "sf", {|msg|
         palouse.setShellParam(msg[1], cmd, msg[2])
@@ -67,21 +91,23 @@ Engine_Palouse : CroneEngine {
       });
     });
 
-    this.addCommand("eval", "s", {|msg|
+
+    // debugging
+    this.addCommand("query_nodes", "", {
+      palouse.queryNodes });
+
+    this.addCommand("ape", "f", {|msg|
+      Ndef(\ape).set(\ape, msg[1]);
+    });
+
+    /*this.addCommand("eval", "s", {|msg| // YIKES
       try {
         msg[1].asString.compile.value;
       } { |error|
         ("error evaluating:\n```"++msg[1]++
           "```\n----\n"++error++"\n----").postln;
       }
-    });
-
-    this.addCommand("ape", "f", {|msg|
-      Ndef(\ape).set(\ape, msg[1]);
-    });
-
-    this.addCommand("query_nodes", "", {
-      palouse.queryNodes });
+    });*/
     // done commands
   }
 

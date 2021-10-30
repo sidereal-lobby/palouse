@@ -1,6 +1,15 @@
 -- palouse
 dawn = util.time()
 
+-- cpath tweak for binary import
+-- we need this for both json & websockets
+-- thanks schollz: 
+-- https://github.com/schollz/o-o-o/blob/2de8de7e955f159c43eef98e3a832a8824d9053f/o-o-o.lua#L27
+local orig_cpath = package.cpath
+if not string.find(orig_cpath,"/home/we/dust/code/palouse/lib/") then
+  package.cpath=orig_cpath..";/home/we/dust/code/palouse/lib/?.so"
+end
+
 include("lib/includes")
 
 function init()
@@ -38,6 +47,8 @@ function redraw()
 end
 
 function cleanup()
+  package.cpath = orig_cpath 
+
   network.cleanup()
   clocks.cleanup()
 end
