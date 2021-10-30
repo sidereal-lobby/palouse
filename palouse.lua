@@ -6,9 +6,12 @@
 engine.name = "Palouse"
 
 -- requires (order agnostic)
-tu        = require("tabutil")
-s         = require("sequins")
+tabutil   = require("tabutil")
+tu        = tabutil
+sequins   = require("sequins")
+s         = sequins
 lattice   = require("lattice")
+l         = lattice
 
 -- includes (order matters)
 clocks    = include("lib/clocks")
@@ -64,7 +67,6 @@ params:set("rev_hf_damping",    p.rev_hf_damping())
 function init()
   fn.init()
   fn.load_config()
-  fn.print("P A L O U S E")
   clocks.init()
   graphics.init()
   stage.init()

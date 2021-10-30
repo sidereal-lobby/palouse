@@ -4,6 +4,7 @@ function fn.init()
   fn.id_counter = 1000
   fn.git_hash = "gitgot"
   fn.cache_git()
+  fn.print("P A L O U S E")
 end
 
 function fn.os_capture(cmd, raw)
