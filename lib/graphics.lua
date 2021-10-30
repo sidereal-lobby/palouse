@@ -74,22 +74,28 @@ function card_sprite_color(idx)
 end
 
 -- private for draw_home()
-function draw_cards()
+function draw_cards(x, y)
   for idx=1,16 do
     local color = card_sprite_color(idx)
     --local color = clocks.redraw_frame % 6 + 1
-    screen.poke(idx*4-5, 52 - card_y[color], 5, 12, card_sprite[color])
+    screen.poke(idx*4-x, y - card_y[color], 5, 12, card_sprite[color])
   end
 end
 
+-- private for various draws_*
+function get_network_status()
+  return network.ready and ":)" or ":("
+end
+
 function graphics:draw_home()
-  draw_cards()
-  self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 5)
+  draw_cards(5, 52)
+  self:text_right(128, 56, get_network_status(), 5)
+  self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 1)
 end
 
 function graphics:setup()
   screen.clear()
-  screen.aa(1)
+  screen.aa(0)
   self:reset_font()
 end
 
