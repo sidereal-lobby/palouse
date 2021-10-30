@@ -3,6 +3,7 @@ local fn = {}
 function fn.init()
   fn.id_counter = 1000
   fn.git_hash = "gitgot"
+  fn.cache_git()
 end
 
 function fn.os_capture(cmd, raw)
@@ -75,11 +76,15 @@ function fn.get_version()
          metadata.version_patch
 end
 
+function fn.cache_git()
+  fn.git_hash = fn.os_capture("cd /home/we/dust/code/palouse && git rev-parse HEAD")
+end
+
 function fn.get_hash()
-  if clock.redraw_frame % 120 = 0 then
-    self.git_hash = fn.os_capture("cd /home/we/dust/code/palouse && git rev-parse HEAD")
+  if clocks.redraw_frame % 120 == 0 then
+    fn.cache_git()
   end
-  return string.sub(self.git_hash, 1, 6)
+  return string.sub(fn.git_hash, 1, 6)
 end
 
 return fn
