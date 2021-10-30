@@ -86,7 +86,16 @@ function get_network_status()
   return network.ready and ":)" or ":("
 end
 
+function draw_bpm()
+  screen.font_face(8)
+  screen.font_size(32)
+  screen.aa(1)
+  graphics:text(0, 28, tempo_cache, 15)
+  graphics:reset_font()
+end
+
 function graphics:draw_home()
+  draw_bpm()
   draw_cards(5, 52)
   self:text_right(128, 56, get_network_status(), 5)
   self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 1)
@@ -94,11 +103,11 @@ end
 
 function graphics:setup()
   screen.clear()
-  screen.aa(0)
   self:reset_font()
 end
 
 function graphics:reset_font()
+  screen.aa(0)
   screen.font_face(0)
   screen.font_size(8)
 end

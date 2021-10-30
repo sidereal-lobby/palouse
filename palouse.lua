@@ -1,6 +1,9 @@
--- palouse
+--  ____,  __,   __,    ____, 
+-- (-(__  (-|   (-|    (-/  \ 
+--  ____)  _|_,  _|__,  _\__/,
+-- (      (     (      (      
 
-engine.name = 'Palouse'
+engine.name = "Palouse"
 
 -- requires (order agnostic)
 tu        = require("tabutil")
@@ -11,7 +14,6 @@ lattice   = require("lattice")
 clocks    = include("lib/clocks")
 fn        = include("lib/fn")
 graphics  = include("lib/graphics")
-views     = include("lib/views")
 metadata  = include("lib/metadata")
 stage     = include("lib/stage")
 oam       = include("lib/oam")
@@ -33,6 +35,32 @@ p.delay_beats      = s{3/4}    -- beats
 p.delay_decay      = s{5}      -- seconds
 p.delay_lag        = s{0.05}   -- seconds
 
+-- clock
+params:set("clock_tempo", p.tempo())
+
+-- compressor settings
+params:set("compressor",      2)    -- off 1, on 2
+params:set("comp_mix",        0.5)  -- 0.0 - 1.0
+params:set("comp_ratio",      4.0)  -- 1.0 - 20.0
+params:set("comp_threshold",  -9.0) -- dB
+params:set("comp_attack",     5.0)  -- ms
+params:set("comp_release",    51.0) -- ms
+params:set("comp_pre_gain",   0.0)  -- dB
+params:set("comp_post_gain",  9.0)  -- dB
+
+-- reverb settings
+params:set("reverb",            p.reverb())
+params:set("rev_eng_input",     -9.0)   -- dB
+params:set("rev_cut_input",     -9.0)   -- dB
+params:set("rev_monitor_input", -100.0) -- dB
+params:set("rev_tape_input",    -100.0) -- dB
+params:set("rev_return_level",  p.rev_return_level())
+params:set("rev_pre_delay",     p.rev_pre_delay())
+params:set("rev_lf_fc",         p.rev_lf_fc())
+params:set("rev_low_time",      p.rev_low_time())
+params:set("rev_mid_time",      p.rev_mid_time())
+params:set("rev_hf_damping",    p.rev_hf_damping())
+
 function init()
   fn.init()
   fn.load_config()
@@ -42,8 +70,10 @@ function init()
   stage.init()
   network.init()
   network.init_clock()
-  fn.set_default_params()
   redraw_clock_id = clock.run(clocks.redraw_clock)
+  tempo_lattice = lattice:new{}
+  tempo_pattern = tempo_lattice:new_pattern{ action = fn.tempo_action }
+  tempo_lattice:start()
   fn.light_bonfire()
 end
 
