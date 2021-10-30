@@ -22,7 +22,7 @@ local card_y = {0,1,2,4,7,11}
 function graphics.init()
   graphics.fps = 15
   graphics.splash_bg = 15
-
+  graphics.view = 1
   local temp_card = ""
   for i=1,#card do
     local on = string.sub(card, i, i) ~= ' '

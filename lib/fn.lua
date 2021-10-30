@@ -19,7 +19,7 @@ end
 
 function fn.load_config()
   -- https://stackoverflow.com/a/41176826
-  local file = "/home/we/dust/code/palouse/lib/config.lua"
+  local file = metadata.absolute_path .. "/config.lua"
   config = {} -- global
   local apply, err = loadfile(file, "t", config)
   if apply then
@@ -28,7 +28,7 @@ function fn.load_config()
     tu.print(config)
   else
     print(err)
-    local apply, err = loadfile("/home/we/dust/code/palouse/lib/default-config.lua", "t", config)
+    local apply, err = loadfile(metadata.absolute_path.."/lib/default-config.lua", "t", config)
     if apply then
       apply()
       print("loading default config instead...")
@@ -39,7 +39,7 @@ function fn.load_config()
 end
 
 function fn.light_bonfire()
-  bonfire = io.open("/home/we/dust/code/palouse/lib/bonfire.lua", "r")
+  bonfire = io.open(metadata.absolute_path.."/lib/bonfire.lua", "r")
   if bonfire ~= nil then
     io.close(bonfire)
     print("lighting your bonfire...")
@@ -102,7 +102,7 @@ function fn.get_version()
 end
 
 function fn.cache_git()
-  fn.git_hash = fn.os_capture("cd /home/we/dust/code/palouse && git rev-parse HEAD")
+  fn.git_hash = fn.os_capture("cd " .. metadata.absolute_path .. " && git rev-parse HEAD")
 end
 
 function fn.get_hash()
