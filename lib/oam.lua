@@ -42,19 +42,20 @@ function oam:make(name, data)
     return loess:get_ancient_by_name(name)
   else
     local ancient = self:new(data)  -- arbitrary data is always welcome in the oam
-    ancient.name        = name      -- know thy true name
-    ancient.is_ancient  = true      -- eons pass
-    ancient.del         = data.del ~= nil and data.del or s{0}    -- delay send: -1 - 1 (or more, to clip)
-    ancient.lag         = data.lag ~= nil and data.lag or s{0}    -- channel strip lag: 0 - +inf (seconds)
-    ancient.lvl         = data.lvl ~= nil and data.lvl or s{1}    -- volume: -1 - 1 (or more, to clip)
-    ancient.mod         = data.mod ~= nil and data.mod or s{0}    -- modulation: 0 - 100
-    ancient.mtr         = data.mtr ~= nil and data.mtr or s{1}    -- meter: 1 - n
-    ancient.div         = data.div ~= nil and data.div or s{.25}  -- division: .25 - n
-    ancient.nte         = data.nte ~= nil and data.nte or s{0}    -- note: semitones from v.root
-    ancient.pan         = data.pan ~= nil and data.pan or s{0}    -- pan: -1 - 1
-    ancient.tpz         = data.tpz ~= nil and data.tpz or s{0}    -- transpose: just this voice
-    ancient.trg         = data.trg ~= nil and data.trg or s{1}    -- trigger: 0 or 1
-    ancient.vel         = data.vel ~= nil and data.vel or s{100}  -- velocity: 0 - 100
+    ancient.name = name -- know thy true name
+    ancient.is_ancient = true -- eons pass
+    ancient.del = data.del ~= nil and data.del or s{0} -- delay send: -1 - 1 (or more, to clip)
+    ancient.lag = data.lag ~= nil and data.lag or s{0} -- channel strip lag: 0 - +inf (seconds)
+    ancient.lvl = data.lvl ~= nil and data.lvl or s{1} -- volume: -1 - 1 (or more, to clip)
+    ancient.mod = data.mod ~= nil and data.mod or s{0} -- modulation: 0 - 100
+    ancient.mtr = data.mtr ~= nil and data.mtr or s{1} -- meter: 1 - n
+    ancient.div = data.div ~= nil and data.div or s{.25} -- division: .25 - n
+    ancient.nte = data.nte ~= nil and data.nte or s{0} -- note: semitones from v.root
+    ancient.pan = data.pan ~= nil and data.pan or s{0} -- pan: -1 - 1
+    ancient.tpz = data.tpz ~= nil and data.tpz or s{0} -- transpose: just this voice
+    ancient.trg = data.trg ~= nil and data.trg or s{1} -- trigger: 0 or 1
+    ancient.vel = data.vel ~= nil and data.vel or s{100} -- velocity: 0 - 100
+    ancient.print_step = data.print_step ~= nil and true or false -- print each step
     local ancient_lattice = lattice:new{}
     ancient.pattern = ancient_lattice:new_pattern{ action = function(t) ancient:step(t) end }
     loess:add_ancient(ancient)
@@ -67,7 +68,9 @@ function oam:step(t)
   self:l():set_meter(self:get_mtr())
   self:p():set_division(self:get_div())
   if self.is_enabled then
-    print("oam step", self.name, self:p().division, t)
+    if self.print_step then
+      print(self.name, "div: " .. self:p().division, "ppqn stamp: " .. t)
+    end
     engine.note(self:get_name(), root_cache + self:get_tpz() + self:get_nte())
     engine.mod(self:get_name(), self:get_mod_float())
     if self:get_trg() == 1 then
@@ -141,11 +144,6 @@ function oam:p()
   else
     fn.print("This OAM is not an ancient.")
   end
-end
-
--- set the pattern division
-function oam:pdiv(division)
-  self:p():set_division(division)
 end
 
 return oam
