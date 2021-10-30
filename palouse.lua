@@ -11,7 +11,7 @@ lattice   = require("lattice")
 clocks    = include("lib/clocks")
 fn        = include("lib/fn")
 graphics  = include("lib/graphics")
-network   = include("lib/views")
+views     = include("lib/views")
 metadata  = include("lib/metadata")
 stage     = include("lib/stage")
 oam       = include("lib/oam")
@@ -53,8 +53,6 @@ function key(k, z)
   if k == 2 then fn.rerun() end
   if k == 3 then fn.rerun() end
 end
-
-fontsize = 8
 
 function enc(e, d)
   print(e, d)

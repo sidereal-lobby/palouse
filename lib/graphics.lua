@@ -18,6 +18,7 @@ local card_sprite = {"","","","","",""}
 
 local card_y = {0,1,2,4,7,11}
 
+fontsize = 8
 
 function graphics.init()
   graphics.fps = 15

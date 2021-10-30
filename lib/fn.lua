@@ -19,7 +19,7 @@ end
 
 function fn.load_config()
   -- https://stackoverflow.com/a/41176826
-  local file = metadata.absolute_path .. "/config.lua"
+  local file = metadata.absolute_path .. "/lib/config.lua"
   config = {} -- global
   local apply, err = loadfile(file, "t", config)
   if apply then
