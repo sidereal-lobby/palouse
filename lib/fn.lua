@@ -2,6 +2,7 @@ local fn = {}
 
 function fn.init()
   fn.id_counter = 1000
+  fn.git_hash = "gitgot"
 end
 
 function fn.os_capture(cmd, raw)
@@ -64,13 +65,6 @@ function fn.print(s)
   print("")
 end
 
-function fn.screen_dirty(bool)
-  if bool == nil then return screen_dirty end
-  --screen_dirty = bool
-  screen_dirty = true
-  return screen_dirty
-end
-
 function fn.get_name()
   return metadata.name
 end
@@ -82,12 +76,10 @@ function fn.get_version()
 end
 
 function fn.get_hash()
-  local hash = fn.os_capture("cd /home/we/dust/code/palouse && git rev-parse HEAD")
-  return string.sub(hash, 1, 6)
-end
-
-function fn.rerun()
-  norns.script.load(norns.state.script)
+  if clock.redraw_frame % 120 = 0 then
+    self.git_hash = fn.os_capture("cd /home/we/dust/code/palouse && git rev-parse HEAD")
+  end
+  return string.sub(self.git_hash, 1, 6)
 end
 
 return fn

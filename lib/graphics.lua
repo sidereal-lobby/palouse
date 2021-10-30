@@ -57,7 +57,6 @@ function graphics:draw_splash()
   if self.splash_bg < 0 then
     self.splash_bg = 15
   end
-  fn.screen_dirty(true)
 end
 
 function graphics:is_home()
