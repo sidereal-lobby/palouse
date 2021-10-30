@@ -84,9 +84,7 @@ end
 
 function graphics:draw_home()
   draw_cards()
-  self:text_right(128, 48, fn.get_hash(), 15)
-  self:text_right(128, 56, fn.get_name(), 15)
-  self:text_right(128, 64, fn.get_version(), 15)
+  self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 5)
 end
 
 function graphics:setup()
