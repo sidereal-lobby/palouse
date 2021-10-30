@@ -43,14 +43,14 @@ end
 function loess:add_ancient(ancient)
   self.ancients[ancient.id] = ancient
   self.ancients_names[ancient.name] = ancient.id
-  p[ancient.name] = ancient
+  l[ancient.name] = ancient
 end
 
 function loess:destroy_ancient(id)
   local n = self.ancients[id].name
   self.ancients[id] = nil
   self.ancients_names[n] = nil
-  p[n] = nil
+  l[n] = nil
 end
 
 function loess:get_ancient_by_name(name)

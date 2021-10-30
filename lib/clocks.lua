@@ -15,8 +15,8 @@ end
 
 function clocks.tempo_action()
   -- need to cache these because sequins change on each access
-  root_cache = p.root()
-  tempo_cache = p.tempo()
+  root_cache = l.root()
+  tempo_cache = l.tempo()
   params:set("clock_tempo", tempo_cache)
   engine.bpm(tempo_cache)
 end
