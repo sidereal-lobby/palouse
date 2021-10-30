@@ -27,57 +27,74 @@ function oam:new(data)
   o.major_version = 0
   o.minor_version = 0
   o.patch_version = 1
-  o.data = data
+  o.data = data -- store any arbitrary data
   o.born = os.time() -- note: each ape norns speaks of different times
   o.is_ancient = false
   o.is_enabled = true
   return o
 end
 
--- factory method to make an "ancient"
-function oam:make_ancient(data)
-  local ancient = self:new(data)
-  ancient.is_ancient = true
-  ancient.name = data.name
-  ancient.del = s{0}    -- delay send: -1 - 1 (or more, to clip)
-  ancient.lag = s{0}    -- channel strip lag: 0 - +inf (seconds)
-  ancient.lvl = s{1}    -- volume: -1 - 1 (or more, to clip)
-  ancient.mod = s{0}    -- modulation: 0 - 100
-  ancient.mtr = s{1}    -- meter: 1 - n
-  ancient.nte = s{0}    -- note: semitones from v.root
-  ancient.pan = s{0}    -- pan: -1 - 1
-  ancient.tpz = s{0}    -- transpose: just this voice
-  ancient.trg = s{1}    -- trigger: 0 or 1
-  ancient.vel = s{100}  -- velocity: 0 - 100
-  local ancient_lattice = lattice:new{}
-  ancient.pattern = ancient_lattice:new_pattern{
-    action = function(t)
-      ancient:step(t)
-    end
-  }
-  stage:add_lattice(ancient.name, ancient_lattice)
-  return ancient
+-- factory method to make more complex oams
+-- for now it only makes "ancients"
+function oam:make(name, data)
+  -- if the ancient already exists, just return it
+  if loess:is_ancient_name(name) then 
+    return loess:get_ancient_by_name(name)
+  else
+    local ancient = self:new(data)  -- arbitrary data is always welcome in the oam
+    ancient.name        = name      -- know thy true name
+    ancient.is_ancient  = true      -- eons pass
+    ancient.del         = data.del ~= nil and data.del or s{0}    -- delay send: -1 - 1 (or more, to clip)
+    ancient.lag         = data.lag ~= nil and data.lag or s{0}    -- channel strip lag: 0 - +inf (seconds)
+    ancient.lvl         = data.lvl ~= nil and data.lvl or s{1}    -- volume: -1 - 1 (or more, to clip)
+    ancient.mod         = data.mod ~= nil and data.mod or s{0}    -- modulation: 0 - 100
+    ancient.mtr         = data.mtr ~= nil and data.mtr or s{1}    -- meter: 1 - n
+    ancient.div         = data.div ~= nil and data.div or s{.25}  -- division: .25 - n
+    ancient.nte         = data.nte ~= nil and data.nte or s{0}    -- note: semitones from v.root
+    ancient.pan         = data.pan ~= nil and data.pan or s{0}    -- pan: -1 - 1
+    ancient.tpz         = data.tpz ~= nil and data.tpz or s{0}    -- transpose: just this voice
+    ancient.trg         = data.trg ~= nil and data.trg or s{1}    -- trigger: 0 or 1
+    ancient.vel         = data.vel ~= nil and data.vel or s{100}  -- velocity: 0 - 100
+    local ancient_lattice = lattice:new{}
+    ancient.pattern = ancient_lattice:new_pattern{ action = function(t) ancient:step(t) end }
+    loess:add_ancient(ancient)
+    loess:add_lattice(ancient.name, ancient_lattice)
+    return ancient
+  end
 end
 
 function oam:step(t)
-  -- print("oam step", t)
+  self:l():set_meter(self:get_mtr())
+  self:p():set_division(self:get_div())
   if self.is_enabled then
-    -- print("engine.note", self:get_name(), stage:get_root_note() + self:get_tpz() + self:get_nte())
-      -- engine.note(self:get_name(), stage:get_root_note() + self:get_tpz() + self:get_nte())
-    -- print("engine.mod", self:get_name(), self:get_mod_float())
-      -- engine.mod(self:get_name(), self:get_mod_float())
+    print("oam step", self.name, self:p().division, t)
+    engine.note(self:get_name(), root_cache + self:get_tpz() + self:get_nte())
+    engine.mod(self:get_name(), self:get_mod_float())
     if self:get_trg() == 1 then
-      -- print("engine.trig", self:get_name(), self:get_vel_float())
-        -- engine.trig(self:get_name(), self:get_vel_float())
-      -- print("todo: graphics:trigger(self:get_name())")
+      engine.trig(self:get_name(), self:get_vel_float())
     end
   end
 end
 
-function oam:get_name() return self.name end
+function oam:get_name() return
+  self.name
+end
+
+function oam:toggle()
+  self.is_enabled = not self.is_enabled
+end
+
+function oam:disable()
+  self.is_enabled = false
+end
+
+function oam:enable()
+  self.is_enabled = true
+end
 
 -- all sequins
 function oam:get_del() return self.del() end
+function oam:get_div() return self.div() end
 function oam:get_lag() return self.lag() end
 function oam:get_lvl() return self.lvl() end
 function oam:get_mod() return self.mod() end
@@ -86,6 +103,7 @@ function oam:get_nte() return self.nte() end
 function oam:get_pan() return self.pan() end
 function oam:get_tpz() return self.tpz() end
 function oam:get_trg() return self.trg() end
+function oam:get_vel() return self.vel() end
 
 -- helpers
 function oam:get_mod_float()
@@ -110,7 +128,7 @@ end
 -- get the lattice
 function oam:l()
   if self.is_ancient then
-    return stage:get_lattice(self.name)
+    return loess:get_lattice(self.name)
   else
     fn.print("This OAM is not an ancient.")
   end
@@ -123,6 +141,11 @@ function oam:p()
   else
     fn.print("This OAM is not an ancient.")
   end
+end
+
+-- set the pattern division
+function oam:pdiv(division)
+  self:p():set_division(division)
 end
 
 return oam

@@ -83,7 +83,7 @@ end
 
 -- private for various draws_*
 function get_network_status()
-  return network.ready and ":)" or ":("
+  return network.ready and ":) :)" or ":("
 end
 
 function draw_bpm()

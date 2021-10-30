@@ -18,25 +18,25 @@ clocks    = include("lib/clocks")
 fn        = include("lib/fn")
 graphics  = include("lib/graphics")
 metadata  = include("lib/metadata")
-stage     = include("lib/stage")
+loess     = include("lib/loess")
 oam       = include("lib/oam")
 network   = include("lib/network")
 
 -- livecode
-p                  = {}        -- protect the palouse
-p.ape              = s{1}      -- ape
-p.root             = s{60}     -- root
-p.tempo            = s{120}    -- tempo
-p.reverb           = s{1}      -- off 1, on 2
-p.rev_return_level = s{0.0}    -- db
-p.rev_pre_delay    = s{60.0}   -- ms
-p.rev_lf_fc        = s{200.0}  -- hz
-p.rev_low_time     = s{6.0}    -- seconds
-p.rev_mid_time     = s{6.0}    -- seconds
-p.rev_hf_damping   = s{6000.0} -- hz
-p.delay_beats      = s{3/4}    -- beats
-p.delay_decay      = s{5}      -- seconds
-p.delay_lag        = s{0.05}   -- seconds
+l                  = loess     -- 10% of earth's land area is covered by loess
+l.ape              = s{1}      -- arbitraria perplexus enigmus
+l.root             = s{60}     -- root
+l.tempo            = s{120}    -- tempo
+l.reverb           = s{1}      -- off 1, on 2
+l.rev_return_level = s{0.0}    -- db
+l.rev_pre_delay    = s{60.0}   -- ms
+l.rev_lf_fc        = s{200.0}  -- hz
+l.rev_low_time     = s{6.0}    -- seconds
+l.rev_mid_time     = s{6.0}    -- seconds
+l.rev_hf_damping   = s{6000.0} -- hz
+l.delay_beats      = s{3/4}    -- beats
+l.delay_decay      = s{5}      -- seconds
+l.delay_lag        = s{0.05}   -- seconds
 
 -- clock
 params:set("clock_tempo", p.tempo())
@@ -69,12 +69,12 @@ function init()
   fn.load_config()
   clocks.init()
   graphics.init()
-  stage.init()
+  loess.init()
   network.init()
   network.init_clock()
   redraw_clock_id = clock.run(clocks.redraw_clock)
   tempo_lattice = lattice:new{}
-  tempo_pattern = tempo_lattice:new_pattern{ action = fn.tempo_action }
+  tempo_pattern = tempo_lattice:new_pattern{ action = clocks.tempo_action }
   tempo_lattice:start()
   fn.light_bonfire()
 end

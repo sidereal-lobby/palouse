@@ -51,13 +51,6 @@ function fn.light_bonfire()
   end
 end
 
-function fn.tempo_action()
-  root_cache = p.root()
-  tempo_cache = p.tempo()
-  params:set("clock_tempo", tempo_cache)
-  engine.bpm(tempo_cache)
-end
-
 function fn.id(prefix)
   -- a servicable attempt creating unique ids
   fn.id_counter = fn.id_counter + 1
