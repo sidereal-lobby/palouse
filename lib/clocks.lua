@@ -14,7 +14,6 @@ function clocks.redraw_clock()
   end
 end
 
-
 function clocks.cleanup()
   clock.cancel(clocks.redraw_clock_id)
 end
@@ -25,7 +24,6 @@ function clocks.tempo_action()
   tempo_cache = l.tempo()
   params:set("clock_tempo", tempo_cache)
   engine.bps(tempo_cache/60)
-
 end
 
 return clocks

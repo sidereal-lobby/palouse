@@ -76,7 +76,7 @@ end
 
 called_step = false
 
-function network.cleanup()
+function network:cleanup()
   print('cleaning up network...')
   if client and type(client.close) == 'function' then client:close() end
 end
