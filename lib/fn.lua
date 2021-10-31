@@ -2,11 +2,25 @@ local fn = {}
 
 function fn.init()
   fn.id_counter = 1000
+  fn.git_hash = "gitgot"
+  fn.cache_git()
+  fn.print("P A L O U S E")
+end
+
+function fn.os_capture(cmd, raw)
+  local f = assert(io.popen(cmd, 'r'))
+  local s = assert(f:read('*a'))
+  f:close()
+  if raw then return s end
+  s = string.gsub(s, '^%s+', '')
+  s = string.gsub(s, '%s+$', '')
+  s = string.gsub(s, '[\n\r]+', ' ')
+  return s
 end
 
 function fn.load_config()
   -- https://stackoverflow.com/a/41176826
-  local file = "/home/we/dust/code/palouse/lib/config.lua"
+  local file = metadata.absolute_path .. "/lib/config.lua"
   config = {} -- global
   local apply, err = loadfile(file, "t", config)
   if apply then
@@ -15,7 +29,7 @@ function fn.load_config()
     tu.print(config)
   else
     print(err)
-    local apply, err = loadfile("/home/we/dust/code/palouse/lib/default-config.lua", "t", config)
+    local apply, err = loadfile(metadata.absolute_path.."/lib/default-config.lua", "t", config)
     if apply then
       apply()
       --print("loading default config instead...")
@@ -26,7 +40,7 @@ function fn.load_config()
 end
 
 function fn.light_bonfire()
-  bonfire = io.open("/home/we/dust/code/palouse/lib/bonfire.lua", "r")
+  bonfire = io.open(metadata.absolute_path.."/lib/bonfire.lua", "r")
   if bonfire ~= nil then
     io.close(bonfire)
     print("lighting your bonfire...")
@@ -53,13 +67,6 @@ function fn.print(s)
   print("")
 end
 
-function fn.screen_dirty(bool)
-  if bool == nil then return screen_dirty end
-  --screen_dirty = bool
-  screen_dirty = true
-  return screen_dirty
-end
-
 function fn.get_name()
   return metadata.name
 end
@@ -70,8 +77,15 @@ function fn.get_version()
          metadata.version_patch
 end
 
-function fn.rerun()
-  norns.script.load(norns.state.script)
+function fn.cache_git()
+  fn.git_hash = fn.os_capture("cd " .. metadata.absolute_path .. " && git rev-parse HEAD")
+end
+
+function fn.get_hash()
+  if clocks.redraw_frame % 120 == 0 then
+    fn.cache_git()
+  end
+  return string.sub(fn.git_hash, 1, 6)
 end
 
 return fn

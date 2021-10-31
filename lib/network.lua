@@ -78,7 +78,6 @@ called_step = false
 
 function network.cleanup()
   print('cleaning up network...')
-  -- assumes this module contains the only cpath tweak
   if client and type(client.close) == 'function' then client:close() end
 end
 

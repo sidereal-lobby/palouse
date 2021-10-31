@@ -18,11 +18,10 @@ local card_sprite = {"","","","","",""}
 
 local card_y = {0,1,2,4,7,11}
 
-
 function graphics.init()
   graphics.fps = 15
   graphics.splash_bg = 15
-
+  graphics.view = 1
   local temp_card = ""
   for i=1,#card do
     local on = string.sub(card, i, i) ~= ' '
@@ -57,7 +56,6 @@ function graphics:draw_splash()
   if self.splash_bg < 0 then
     self.splash_bg = 15
   end
-  fn.screen_dirty(true)
 end
 
 function graphics:is_home()
@@ -75,28 +73,55 @@ function card_sprite_color(idx)
 end
 
 -- private for draw_home()
-function draw_cards()
-  for idx=1,32 do
+function draw_cards(x, y)
+  for idx=1,16 do
     local color = card_sprite_color(idx)
     --local color = clocks.redraw_frame % 6 + 1
-    screen.poke(idx*4-5, 35 - card_y[color], 5, 12, card_sprite[color])
+    screen.poke(idx*4-x, y - card_y[color], 5, 12, card_sprite[color])
+  end
+end
+
+-- private for various draws_*
+function get_network_status()
+  return network.ready and ":) :)" or ":("
+end
+
+function draw_bigs()
+  screen.font_face(8)
+  screen.font_size(32)
+  screen.aa(1)
+  graphics:text(0, 28, tempo_cache, 15)
+  screen.font_size(24)
+  graphics:text(0, 50, root_cache, 15)
+  graphics:reset_font()
+end
+
+-- private for draw_home()
+function draw_oams()
+  local i = 0
+  for k, v in pairs(loess.ancients) do
+    local l = v.is_enabled and 15 or 1
+    local pre = v.is_enabled and "" or "x:"
+    graphics:text_right(128, 8 + i, pre .. v.name, l)
+    i = i + 8
   end
 end
 
 function graphics:draw_home()
-  draw_cards()
-
-  self:text_right(128, 56, fn:get_name(), 15)
-  self:text_right(128, 64, fn:get_version(), 15)
+  draw_bigs()
+  draw_oams()
+  draw_cards(5, 52)
+  self:text_right(128, 56, get_network_status(), 5)
+  self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 1)
 end
 
 function graphics:setup()
   screen.clear()
-  screen.aa(1)
   self:reset_font()
 end
 
 function graphics:reset_font()
+  screen.aa(0)
   screen.font_face(0)
   screen.font_size(8)
 end

@@ -8,10 +8,7 @@ end
 function clocks.redraw_clock()
   while true do
     clocks.redraw_frame = clocks.redraw_frame + 1
-    if fn.screen_dirty() then
-      fn.screen_dirty(false)
-      redraw()
-    end
+    redraw()
     screen.ping()
     clock.sleep(1 / 15)
   end
@@ -20,6 +17,15 @@ end
 
 function clocks.cleanup()
   clock.cancel(clocks.redraw_clock_id)
+end
+
+function clocks.tempo_action()
+  -- need to cache these because sequins change on each access
+  root_cache = l.root()
+  tempo_cache = l.tempo()
+  params:set("clock_tempo", tempo_cache)
+  engine.bps(tempo_cache/60)
+
 end
 
 return clocks

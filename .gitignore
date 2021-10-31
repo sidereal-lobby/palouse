@@ -1,5 +1,6 @@
 # SiLo
-
+*.swp
+*.swo
 lib/bonfire.lua
 lib/config.lua
 .DS_Store
@@ -34,8 +35,8 @@ luac.out
 
 # Shared objects (inc. Windows DLLs)
 *.dll
-*.so
-*.so.*
+#*.so
+#*.so.*
 *.dylib
 
 # Executables
