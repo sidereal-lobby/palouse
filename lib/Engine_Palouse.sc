@@ -111,6 +111,11 @@ Engine_Palouse : CroneEngine {
       Ndef((msg[1] ++ "Strip").asSymbol).set(\lag, msg[2]);
     });
 
+    this.addCommand("set", "ssf", {|msg|
+      Ndef(msg[1].asSymbol).set(msg[2].asSymbol, msg[2]);
+    });
+
+
     this.addCommand("send_delay", "sf", {|msg|
       Ndef((msg[1] ++ "Strip").asSymbol).set(\delaySend, msg[2]);
     });
