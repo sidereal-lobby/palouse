@@ -126,6 +126,7 @@ Palouse {
   }
 
   plug{|to, input, from|
+    ("plugging Ndef(\\"++from++") into Ndef(\\"++to++")."++input);
     Ndef(to).set(input, Ndef(from));
   }
 
