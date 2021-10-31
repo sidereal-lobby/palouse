@@ -18,7 +18,7 @@ function clocks.tempo_action()
   root_cache = l.root()
   tempo_cache = l.tempo()
   params:set("clock_tempo", tempo_cache)
-  engine.bpm(tempo_cache)
+  engine.bps(tempo_cache/60)
 end
 
 return clocks
