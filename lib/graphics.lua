@@ -86,16 +86,30 @@ function get_network_status()
   return network.ready and ":) :)" or ":("
 end
 
-function draw_bpm()
+function draw_bigs()
   screen.font_face(8)
   screen.font_size(32)
   screen.aa(1)
   graphics:text(0, 28, tempo_cache, 15)
+  screen.font_size(24)
+  graphics:text(0, 50, root_cache, 15)
   graphics:reset_font()
 end
 
+-- private for draw_home()
+function draw_oams()
+  local i = 0
+  for k, v in pairs(loess.ancients) do
+    local l = v.is_enabled and 15 or 1
+    local pre = v.is_enabled and "" or "x:"
+    graphics:text_right(128, 8 + i, pre .. v.name, l)
+    i = i + 8
+  end
+end
+
 function graphics:draw_home()
-  draw_bpm()
+  draw_bigs()
+  draw_oams()
   draw_cards(5, 52)
   self:text_right(128, 56, get_network_status(), 5)
   self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 1)
