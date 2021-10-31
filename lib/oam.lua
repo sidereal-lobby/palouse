@@ -74,7 +74,7 @@ function oam:step(t)
     engine.note(self:get_name(), root_cache + self:get_tpz() + self:get_nte())
     engine.mod(self:get_name(), self:get_mod_float())
     for k, v in pairs(self.data) do
-      engine.set(k, v()) -- assumes sequin
+      engine.set(self.name, k, v()) -- assumes sequin
     end
     if self:get_trg() == 1 then
       engine.trig(self:get_name(), self:get_vel_float())
