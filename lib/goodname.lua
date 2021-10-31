@@ -72,7 +72,8 @@ function expose_engine(cmd_name, api_name)
       --       i.e. s -> "", i => 0, etc.
       cmd.func(...)
       local args = table.pack(...)
-      g.record_event(fn, cmd_name, args)
+      tu.print(args)
+      g.record_event(cmd_name, args)
     end
   end
 end
@@ -186,6 +187,7 @@ expose(draw, "draw")
 expose(plug, "plug")
 --expose_engine("create_prime") -- hail? draw?
 expose_engine("set")
+expose_engine("lag")
 expose_engine("free")
 expose_engine("play")
 --expose_engine("plug")
