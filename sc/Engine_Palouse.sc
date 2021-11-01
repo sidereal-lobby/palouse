@@ -1,6 +1,6 @@
 Engine_Palouse : CroneEngine {
   classvar luaOscPort = 10111;
-  classvar fnDir = "/home/we/dust/code/palouse/sc/prime";
+  classvar fnDir = "/home/we/dust/code/palouse/sc/model";
   var palouse;
 
   *new { arg context, doneCallback;
@@ -11,9 +11,9 @@ Engine_Palouse : CroneEngine {
     var luaOscAddr = NetAddr("localhost", luaOscPort);
 
     palouse = Palouse.new(context.server, fnDir);
-    palouse.primes.keys.do({ arg name;
+    palouse.models.keys.do({ arg name;
 			("sending name: " ++ name).postln;
-			luaOscAddr.sendMsg("/add_prime", name);
+			luaOscAddr.sendMsg("/add_model", name);
 		});
 
 

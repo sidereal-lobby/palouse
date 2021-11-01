@@ -2,7 +2,6 @@
 -- (-(__  (-|   (-|    (-/  \ 
 --  ____)  _|_,  _|__,  _\__/,
 -- (      (     (      (      
-dawn = util.time()
 
 -- cpath tweak for binary import
 -- we need this for both json & websockets
@@ -32,7 +31,10 @@ loess     = include("lib/loess")
 oam       = include("lib/oam")
 network   = include("lib/network")
 json      = include("lib/json")
-p         = include("lib/goodname")
+history   = include("lib/history")
+state     = include("lib/state")
+--p         = include("lib/goodname")
+repl      = include("lib/repl") -- if this isn't last, WEIRD THINGS HAPPEN
 
 -- livecode
 l                  = loess     -- 10% of earth's land area is covered by loess
@@ -85,11 +87,13 @@ function init()
   network.init()
   network.init_clock()
 
-  print("sunrise lasted "..string.format("%.4f", util.time()-dawn).." seconds")
+  print("sunrise lasted "..string.format("%.4f", history.get_ts()).." seconds")
   tempo_lattice = lattice:new{}
   tempo_pattern = tempo_lattice:new_pattern{ action = clocks.tempo_action }
   tempo_lattice:start()
   fn.light_bonfire()
+
+  repl.init()
 end
 
 function key(k, z)
@@ -101,6 +105,17 @@ end
 
 function enc(e, d)
   print(e, d)
+end
+
+function osc.event(path, args, from)
+  if path == '/add_model' then
+    -- print('add model "'..args[1]..'"')
+    state.add_model(args[1])
+  else
+    print('received an OSC event at path '..path)
+    tu.print(args)
+    print('')
+  end
 end
 
 function redraw()

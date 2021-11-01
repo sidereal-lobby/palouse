@@ -5,6 +5,7 @@ lib/bonfire.lua
 lib/config.lua
 .DS_Store
 ._.DS_Store
+dawns/*.json
 
 # Compiled Lua sources
 luac.out

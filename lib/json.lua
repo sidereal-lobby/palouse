@@ -1,5 +1,5 @@
 -- from @schollz's o-o-o 
-cj = require('cjson')
+local cj = require('cjson')
 
 local j = {}
 
@@ -15,7 +15,6 @@ end
 
 function j.load(filename)
   filename=filename..".json"
-  print("o-o-o: loading "..filename)
   local f=io.open(filename,"rb")
   local content=f:read("*all")
   f:close()
@@ -25,12 +24,9 @@ function j.load(filename)
 end
 
 function j.save(data, filename)
-  print(type(data))
-  print(data)
   local str = cj.encode(data)
 
   filename=filename..".json"
-  print("o-o-o: saving "..filename)
   local file=io.open(filename,"w+")
   io.output(file)
   io.write(str)

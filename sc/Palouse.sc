@@ -12,24 +12,24 @@ Default number of channels when initializing in control rate and no specific num
 */
 
 Palouse {
-  var <primes, mixBus, delayBus, server;
+  var <models, mixBus, delayBus, server;
 
-  *new { |saver, primePath|
-		^super.new.init(saver, primePath)
+  *new { |saver, modelPath|
+		^super.new.init(saver, modelPath)
 	}
 
-	init { |svr, primePath|
+	init { |svr, modelPath|
     server = svr;
 
-    primes = Dictionary.new;
-    PathName.new(primePath).entries.do({|e|
-      primes[e.fileNameWithoutExtension] = e.fullPath.load
+    models = Dictionary.new;
+    PathName.new(modelPath).entries.do({|e|
+      models[e.fileNameWithoutExtension] = e.fullPath.load
 		});
 
     server.sync;
 
-    ("primes:").postln;
-    primes.postln;
+    ("models:").postln;
+    models.postln;
 
     delayBus = Bus.audio(server, 2);
     mixBus = Bus.audio(server, 2);
@@ -60,16 +60,23 @@ Palouse {
     Ndef(\ape, {|ape, lag=0| ape.lag(0); });
   }
 
-  make {|primeName, ndefName, play=false, moveToHead=false|
+  // I think this can be used for e.g. .ar, .kr, etc.
+  // see:
+  // - Object.perform
+  // - bottom of Reference > Language > OOP > Messages
+  // 5.perform('+', 5)
+
+
+  make {|modelName, ndefName|
     var name = ndefName;
-    "creating prime Ndef".postln;
+    "creating nacelle Ndef".postln;
     ("ndefName = "++ndefName++" (type "++ndefName.class++")").postln;
-    ("primeName = "++primeName++" (type "++primeName.class++")").postln;
+    ("modelName = "++modelName++" (type "++modelName.class++")").postln;
 
     fork {
       //fn.asSynthDef.allControlNames.postln;
 
-      Ndef(name, primes[primeName.asString]);
+      Ndef(name, models[modelName.asString]);
       Ndef(name).fadeTime = 2;
       //if (play, { Ndef(name).play });
 

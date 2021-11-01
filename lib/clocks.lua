@@ -20,8 +20,8 @@ end
 
 function clocks.tempo_action()
   -- need to cache these because sequins change on each access
-  root_cache = l.root()
-  tempo_cache = l.tempo()
+  root_cache = loess.root()
+  tempo_cache = loess.tempo()
   params:set("clock_tempo", tempo_cache)
   engine.bps(tempo_cache/60)
 end
