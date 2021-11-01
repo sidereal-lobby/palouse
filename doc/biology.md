@@ -13,8 +13,6 @@ simplest species. may aggregate into collectives.
 
 - [ ] Dust
 - [ ] LFSaw (0-1)
-- [ ] .midicps
-- [ ] ring mod
 - [ ] filter
 - [ ] crossfader
 - [ ] line input
@@ -28,10 +26,12 @@ simplest species. may aggregate into collectives.
 - [ ] note/degree -> cycle/period (TET, JI)
 - [ ] beat -> cycle/period (BPM, quavers, seconds)
 - [ ] .lagud
+- [X] ring mod / VCA
+- [X] .midicps
 - [X] Delay
 - [X] SinOsc, SinOscFB
-- [X] noise source
-- [X] ad
+- [X] WhiteNoise
+- [X] A/D env
 - [X] Impulse
 - [X] CombN
 - [X] donk
@@ -60,7 +60,7 @@ pack reliable multitaskers.
 
 ## multichannel expansion
 modulation is interesting in clusters of related signals.
-these have slightly different parameters. 
+these have slightly different parameters.
 the constellation between these parameters is itself parametric.
 a chord is an example.
 so is a chorus.
