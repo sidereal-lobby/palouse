@@ -9,7 +9,6 @@ function r.set_params(nacelle_name, params)
   end
 
   for key, value in pairs(params) do
-    print('set_params:', nacelle_name, key, value)
     engine.set(nacelle_name, key, value)
     state.set_nacelle_param(nacelle_name, key, value)
   end
@@ -17,21 +16,14 @@ end
 
 function r.nacelle_context (nacelle_name, fn)
   local context = { nacelle_name=nacelle_name, fn=fn }
-  print('new nacelle context for '..nacelle_name)
 
   local play = function ()
     engine.play(nacelle_name)
     state.record_engine('play', nacelle_name)
   end
 
-  --print('welcome to the context of nacelle '..nacelle_name)
-
   setmetatable(context, {
     __index = function (t, key) 
-      --if key == 'draw' then
-      --  return draw
-      --end
-
       if key == 'play' then
         rawset(context, 'fn', 'play')
         play() -- don't need params yet - save some typing
@@ -43,38 +35,24 @@ function r.nacelle_context (nacelle_name, fn)
         return context
       end
 
-      print(nacelle_name.."'s "..key)
       local x 
 
       x = state.nacelles[nacelle_name].params[key]
       if x ~= nil then return x end
 
-      x = explicit_globals[key]
-      if x then return x end
-
-      -- took me a minute to find this
       -- https://sodocumentation.net/lua/topic/2444/metatables#raw-table-access
       x = rawget(t,key)
-
       if x then return x end
-      print("failed to get value for model key: "..key)
+
+      print("failed to get value for nacelle key: "..key)
     end,
     __newindex = function (t, key, value)
-      print('this is newindex')
       r.set_params(nacelle_name, {[key]=value})
     end,
     __call = function (t, ...)
       local fn = rawget(context, 'fn')
       local args = table.pack(...)
-      print('called '..fn..' with '..#args..' args:')
-      for i=1,#args do
-        print('arg #'..i..':')
-        if type(args[i]) == 'table' then 
-          tu.print(args[i])
-        else
-          print(args[i])
-        end
-      end
+
       if fn == 'play' then
         play()
         state.record_engine('play', nacelle_name)
@@ -100,13 +78,12 @@ function r.nacelle_context (nacelle_name, fn)
   return context
 end
 
-local model_context = function(model_name)
+function r.model_context(model_name)
   -- play and move_to_head suck. confusing.
   -- .play is easy.
   -- for move_to_head, 
   -- try .duck() and .jump() instead
   -- w/ no arg = moveToHead. w/ arg = moveBefore, etc.
-
 
   -- sooooo there's a few parts to this that need unpacking:
   -- - parameter collating
@@ -131,8 +108,8 @@ local model_context = function(model_name)
       end
       -- (see below for table case)
 
-      -- what's left? numbers? 
-      -- (numbers won't work/make-sense w/o param introspection)
+    -- what's left? numbers? 
+    -- (numbers won't work/make-sense w/o param introspection)
     else
     end
 
@@ -144,18 +121,6 @@ local model_context = function(model_name)
     state.new_nacelle(model_name, nacelle_name)
 
     if type(args[1]) == 'table' then
-      print('(draw) watch closely...')
-      for i=1,#args do
-        print('arg #'..i..':')
-        if type(args[i]) == 'table' then 
-          tu.print(args[i])
-        else
-          print(args[i])
-        end
-      end
-      print('..did you see it?')
-      -- I think we can do this as a table
-      -- but then jt's varargs, which the LUA->engine API doesn't like
       r.set_params(nacelle_name, args[1])
     end
 
@@ -163,24 +128,16 @@ local model_context = function(model_name)
   end
 
   local context = { model_name=model_name }
-  --print('creating model context for '..model_name..'.')
-
   setmetatable(context, {
     __index = function (t, key) 
-      --if key == 'draw' then
-      --  return draw
-      --end
+      if key == 'play' then
+        return draw().play
+      end
 
-      print(name.."'s "..key)
-      local x 
-      x = explicit_globals[key]
-      if x then return x end
-
-      -- took me a minute to find this
       -- https://sodocumentation.net/lua/topic/2444/metatables#raw-table-access
-      x = rawget(t,key)
-
+      local x = rawget(t,key)
       if x then return x end
+
       print("failed to get value for model key: "..key)
     end,
     __call = draw
@@ -188,7 +145,6 @@ local model_context = function(model_name)
   return context
 end
 
--- I think we should call these models.
 function r.list_models ()
   local str = 'all models:'
   for k, v in pairs(state.models) do
@@ -198,7 +154,6 @@ function r.list_models ()
   return str..'\r'
 end
 
--- nacelles are more like individual ndefs.
 function r.list_nacelles ()
   local str = 'all nacelles:'
   for k, v in pairs(state.nacelles) do
@@ -208,8 +163,9 @@ function r.list_nacelles ()
   return str..'\r'
 end
 
--- and maybe the pylon is the connections...?
+-- model -> nacelle -> maybe pylon is connections...?
 
+-- GLOBAL REPL
 function r.init()
   setmetatable(_G, {
     __index = function (t, key) 
@@ -222,12 +178,13 @@ function r.init()
       end
 
       local x 
+
       x = explicit_globals[key]
       if x then return x end
 
       x = state.models[key]
       if x then
-        return model_context(key)
+        return r.model_context(key)
       end
 
       x = state.nacelles[key]
