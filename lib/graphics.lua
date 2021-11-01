@@ -74,7 +74,7 @@ function graphics:draw_cards(x, y)
 end
 
 -- private for various draws_*
-function get_network_status()
+function graphics:get_network_status()
   return network.ready and ":) :)" or ":("
 end
 
@@ -103,7 +103,7 @@ function graphics:draw_home()
   graphics:draw_bigs()
   graphics:draw_oams()
   graphics:draw_cards(5, 52)
-  self:text_right(128, 56, get_network_status(), 5)
+  self:text_right(128, 56, graphics:get_network_status(), 5)
   self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 1)
 end
 
