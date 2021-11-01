@@ -190,20 +190,22 @@ end
 
 -- I think we should call these models.
 function r.list_models ()
-  print('all models:')
+  local str = 'all models:'
   for k, v in pairs(state.models) do
     -- v doesn't have anything yet...
-    print(k)
+    str = str..'\t'..k
   end
+  return str..'\r'
 end
 
 -- nacelles are more like individual ndefs.
 function r.list_nacelles ()
-  print('all nacelles:')
+  local str = 'all nacelles:'
   for k, v in pairs(state.nacelles) do
     -- v doesn't have anything yet...
-    print(k)
+    str = str..'\t'..k
   end
+  return str..'\r'
 end
 
 -- and maybe the pylon is the connections...?
@@ -212,13 +214,11 @@ function r.init()
   setmetatable(_G, {
     __index = function (t, key) 
       if key == 'models' then 
-        r.list_models()
-        return
+        return r.list_models() -- returning string is less noisy
       end
 
       if key == 'nacelles' then 
-        r.list_nacelles()
-        return
+        return r.list_nacelles() -- returning string is less noisy
       end
 
       local x 
