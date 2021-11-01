@@ -1,0 +1,21 @@
+- [o] models
+  - [ ] note -> hz (JI) - LUT? only need 12 floats!
+  - [ ] degree -> note
+  - [X] note -> hz (TET)
+  - [X] DONK
+  - [X] standalone env
+  - [X] standalone FM op
+  - [X] comb filter
+- [O] REPL
+  - [O] engine
+    - [ ] plug
+    - [X] create
+    - [X] play
+    - [X] set params
+  - [X] record history for *every* action
+    - [X] have to add for each action, but the capability is there
+- [o] historical record
+  - [ ] randomly accessible
+  - [X] always recording
+- [ ] collective lifeforms
+  - [ ] aggregate params (auto-introspect?)

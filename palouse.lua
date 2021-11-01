@@ -3,6 +3,15 @@
 --  ____)  _|_,  _|__,  _\__/,
 -- (      (     (      (      
 
+-- cpath tweak for binary import
+-- we need this for both json & websockets
+-- thanks schollz: 
+-- https://github.com/schollz/o-o-o/blob/2de8de7e955f159c43eef98e3a832a8824d9053f/o-o-o.lua#L27
+local orig_cpath = package.cpath
+if not string.find(orig_cpath,"/home/we/dust/code/palouse/lib/") then
+  package.cpath=orig_cpath..";/home/we/dust/code/palouse/lib/?.so"
+end
+
 engine.name = "Palouse"
 
 -- requires (order agnostic)
@@ -21,6 +30,11 @@ metadata  = include("lib/metadata")
 loess     = include("lib/loess")
 oam       = include("lib/oam")
 network   = include("lib/network")
+json      = include("lib/json")
+history   = include("lib/history")
+state     = include("lib/state")
+--p         = include("lib/goodname")
+repl      = include("lib/repl") -- if this isn't last, WEIRD THINGS HAPPEN
 
 -- livecode
 l                  = loess     -- 10% of earth's land area is covered by loess
@@ -72,11 +86,14 @@ function init()
   loess.init()
   network.init()
   network.init_clock()
-  redraw_clock_id = clock.run(clocks.redraw_clock)
+
+  print("sunrise lasted "..string.format("%.4f", history.get_ts()).." seconds")
   tempo_lattice = lattice:new{}
   tempo_pattern = tempo_lattice:new_pattern{ action = clocks.tempo_action }
   tempo_lattice:start()
   fn.light_bonfire()
+
+  repl.init()
 end
 
 function key(k, z)
@@ -90,10 +107,24 @@ function enc(e, d)
   print(e, d)
 end
 
+function osc.event(path, args, from)
+  if path == '/add_model' then
+    -- print('add model "'..args[1]..'"')
+    state.add_model(args[1])
+  else
+    print('received an OSC event at path '..path)
+    tu.print(args)
+    print('')
+  end
+end
+
 function redraw()
   graphics:render()
 end
 
 function cleanup()
-  network:cleanup()
+  package.cpath = orig_cpath 
+
+  network.cleanup()
+  clocks.cleanup()
 end

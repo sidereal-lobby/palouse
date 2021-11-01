@@ -16,8 +16,6 @@ local card = "   x " ..
 
 local card_sprite = {"","","","","",""}
 
-local card_y = {0,1,2,4,7,11}
-
 function graphics.init()
   graphics.fps = 15
   graphics.splash_bg = 15
@@ -62,31 +60,25 @@ function graphics:is_home()
   return true -- just a stub for now
 end
 
--- private for draw_cards()
-function card_sprite_color(idx)
-  local frame = clocks.redraw_frame % 86
-  frame = frame - 30
-
-  local distance = math.abs(idx - frame)
-  if distance > 4 then return 1 end
-  return 6 - distance
-end
-
 -- private for draw_home()
-function draw_cards(x, y)
+function graphics:draw_cards(x, y)
+  local color
+  local y_pos = {0,1,2,4,7,11}
+  local frame = (clocks.redraw_frame % 86) - 30
+
   for idx=1,16 do
-    local color = card_sprite_color(idx)
-    --local color = clocks.redraw_frame % 6 + 1
-    screen.poke(idx*4-x, y - card_y[color], 5, 12, card_sprite[color])
+    local distance = math.abs(idx - frame)
+    color = (distance > 4) and (1) or (6 - distance)
+    screen.poke(idx*4-x, y-y_pos[color], 5, 12, card_sprite[color])
   end
 end
 
 -- private for various draws_*
-function get_network_status()
+function graphics:get_network_status()
   return network.ready and ":) :)" or ":("
 end
 
-function draw_bigs()
+function graphics:draw_bigs()
   screen.font_face(8)
   screen.font_size(32)
   screen.aa(1)
@@ -97,7 +89,7 @@ function draw_bigs()
 end
 
 -- private for draw_home()
-function draw_oams()
+function graphics:draw_oams()
   local i = 0
   for k, v in pairs(loess.ancients) do
     local l = v.is_enabled and 15 or 1
@@ -108,10 +100,10 @@ function draw_oams()
 end
 
 function graphics:draw_home()
-  draw_bigs()
-  draw_oams()
-  draw_cards(5, 52)
-  self:text_right(128, 56, get_network_status(), 5)
+  graphics:draw_bigs()
+  graphics:draw_oams()
+  graphics:draw_cards(5, 52)
+  self:text_right(128, 56, graphics:get_network_status(), 5)
   self:text_right(128, 64, fn.get_hash() .. " v" .. fn.get_version(), 1)
 end
 

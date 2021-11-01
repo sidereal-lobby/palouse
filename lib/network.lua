@@ -1,13 +1,7 @@
 local network = {}
 
--- cpath tweak for binary import
-local orig_cpath = package.cpath
 -- cpath must be set BEFORE including
-if not string.find(orig_cpath,metadata.absolute_path.."/lib/") then
-  package.cpath=orig_cpath..";"..metadata.absolute_path.."/lib/?.so"
-end
 local client = include("lib/websocket")
-
 
 function network.init()
   network.ready = false
@@ -84,8 +78,6 @@ called_step = false
 
 function network:cleanup()
   print('cleaning up network...')
-  -- assumes this module contains the only cpath tweak
-  package.cpath = orig_cpath 
   if client and type(client.close) == 'function' then client:close() end
 end
 
