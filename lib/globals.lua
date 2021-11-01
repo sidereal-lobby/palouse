@@ -33,12 +33,4 @@ return {
   -- sounds real specific - maybe a method/function of `network` global?
   -- e.g. network.get_status?
   get_network_status=get_network_status,
-
-  -- these probably don't need to be globals
-  -- I think they're all private graphics functions
-  -- can't think of use cases for calling outside `graphics`
-  draw_bigs=draw_bigs,
-  draw_oams=draw_oams,
-  draw_cards=draw_cards,
-  card_sprite_color=card_sprite_color,
 }
