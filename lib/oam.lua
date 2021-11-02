@@ -124,7 +124,7 @@ end
 function oam:report()
   print("")
     print("~~~~~~~.~~~~~~~.~~~~~~~.~~~~~~~.")
-    tu.print(self)
+    tabutil.print(self)
     print("~~~~~~~.~~~~~~~.~~~~~~~.~~~~~~~.")
   print("")
 end

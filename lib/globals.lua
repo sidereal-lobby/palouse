@@ -9,10 +9,6 @@ return {
   -- - e.g. might have other "modes" where l means something else
   l=l,
   
-  -- this is a great global for debugging
-  -- but I almost prefer to use its full name
-  -- for visibility & script-to-script consistency (expectations)
-  tu=tu,
 
   -- similar - I think some of the stuff in here will be good for debugging
   -- but so much of the REPL code uses first class functions
@@ -31,4 +27,5 @@ return {
   history=history,
   config=config,
   logger=logger,
+  tabutil=tabutil,
 }

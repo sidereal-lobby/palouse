@@ -12,7 +12,7 @@ local noop = function () end
 local do_log = function (head, ...) 
   -- this could be problematic, but it seems handy
   if type(head) == 'table' then
-    tu.print(head)
+    tabutil.print(head)
   else
     print(head, ...) 
   end

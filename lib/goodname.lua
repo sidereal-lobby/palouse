@@ -66,7 +66,7 @@ function expose_engine(cmd_name, api_name)
       --       i.e. s -> "", i => 0, etc.
       cmd.func(...)
       local args = table.pack(...)
-      tu.print(args)
+      tabutil.print(args)
       history.record_event(cmd_name, args)
     end
   end

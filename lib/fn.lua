@@ -26,14 +26,14 @@ function fn.load_config()
   if apply then
     apply()
     print("loading your config...")
-    tu.print(config)
+    tabutil.print(config)
   else
     print(err)
     local apply, err = loadfile(metadata.absolute_path.."/lib/default-config.lua", "t", config)
     if apply then
       apply()
       print("loading default config instead...")
-      tu.print(config)
+      tabutil.print(config)
     end
   end
   print("")

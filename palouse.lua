@@ -16,7 +16,6 @@ engine.name = "Palouse"
 
 -- requires (order agnostic)
 tabutil   = require("tabutil")
-tu        = tabutil
 sequins   = require("sequins")
 s         = sequins
 lattice   = require("lattice")
