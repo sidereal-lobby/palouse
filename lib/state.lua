@@ -27,6 +27,19 @@ function s.set_nacelle_param(nacelle_name, param_name, value)
   state.record_engine('set', nacelle_name, param_name, value)
 end
 
+-- ha, could use metamethods for the state here.
+function s.plug_nacelle(to_nacelle, param_name, from_nacelle)
+  s.nacelles[to_nacelle].ins[param_name] = from_nacelle 
+
+  if not s.nacelles[from_nacelle].outs[from_nacelle] then
+    s.nacelles[from_nacelle].outs[to_nacelle] = {}
+  end
+
+  table.insert(s.nacelles[from_nacelle].outs[to_nacelle], param_name)
+
+  state.record_engine('plug', to_nacelle, param_name, from_nacelle)
+end
+
 function s.new_nacelle(model_name, nacelle_name)
   local nacelle = { 
     nacelle_name=nacelle_name, 
