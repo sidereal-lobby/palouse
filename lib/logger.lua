@@ -1,4 +1,4 @@
-local l = {}
+local logger = {}
 -- construct a logger based on the component
 -- check config for component debug status
 local level_enum = {
@@ -19,7 +19,7 @@ local do_log = function (head, ...)
 end
 
 -- debug, info, warn, error
-function l.make(speaking_component)
+function logger.make(speaking_component)
   local component_log = {}
   local reload = function ()
     -- set threshold here so it can be reloaded on-the-fly
@@ -38,4 +38,4 @@ function l.make(speaking_component)
   return component_log
 end
 
-return l
+return logger
