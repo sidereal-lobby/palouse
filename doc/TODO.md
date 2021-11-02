@@ -1,3 +1,18 @@
+- [ ] engine
+  - [ ] introspect parameters
+  - [ ] container + accoutrement (note, gate, pan, sends, etc.)
+    - [ ] parameter aggregation?
+  - [ ] rename/swap ndefs
+  - [ ] polyphony
+- [ ] architecture
+  - [ ] log
+  - [ ] message bus/queue (?) 
+  - [ ] tests
+  - [ ] multichannel control (superspreader)
+    - [ ] routing
+    - [ ] parametric control
+    - [ ] downstream channel management
+    - [ ] REPL UI
 - [o] models
   - [ ] note -> hz (JI) - LUT? only need 12 floats!
   - [ ] degree -> note
@@ -7,8 +22,10 @@
   - [X] standalone FM op
   - [X] comb filter
 - [O] REPL
-  - [O] engine
-    - [ ] plug
+  - [o] engine
+    - [ ] multiply
+    - [ ] add
+    - [X] plug
     - [X] create
     - [X] play
     - [X] set params
@@ -16,6 +33,6 @@
     - [X] have to add for each action, but the capability is there
 - [o] historical record
   - [ ] randomly accessible
+    - [ ] replay
+    - [ ] extraction
   - [X] always recording
-- [ ] collective lifeforms
-  - [ ] aggregate params (auto-introspect?)
