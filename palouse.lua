@@ -33,6 +33,7 @@ network   = include("lib/network")
 json      = include("lib/json")
 history   = include("lib/history")
 state     = include("lib/state")
+logger    = include("lib/logger")
 --p         = include("lib/goodname")
 repl      = include("lib/repl") -- if this isn't last, WEIRD THINGS HAPPEN
 

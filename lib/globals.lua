@@ -29,4 +29,6 @@ return {
   state=state,
   json=json,
   history=history,
+  config=config,
+  logger=logger,
 }
