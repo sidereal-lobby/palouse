@@ -5,14 +5,17 @@ local ndefs = {}
 
 -- TODO:
 -- [ ] immediate history recall (i.e. "bring me up to speed")
--- [ ] fluent API: .draw("s").freq(400)
--- [ ] better logging
+-- [ ] *, +  -> mul, add
 -- [ ] low/high -> mul/add
--- [ ] list of available "primes" (I dislike this name)
+-- [x] list of available "primes" (I dislike this name)
+-- [x] fluent API: .draw("s").freq(400)
 -- [x] autosave history to JSON
+
+-- [0] better logging (this is too vague, refine objectively)
 
 print("hello my name is good name and that is a GOOD NAME")
 
+-- TODO: move to fn
 function join(list, sep)
   if not sep then sep = ", " end
 
@@ -69,17 +72,9 @@ function expose_engine(cmd_name, api_name)
   end
 end
 
--- TODO: do literally anything, RECORD IT
-
-
+-- move these 2 to REPL
 local wave = function()
   print("waved.")
-end
-
--- a "shell" is like a placeholder Ndef
--- like what we did in FCV
-function create_shell(name)
-  engine.create_shell(name)
 end
 
 local redraw = function (ndef_name)
@@ -92,36 +87,24 @@ local redraw = function (ndef_name)
   print("drew a(n) '"..fn_name.."' (#"..index..") named '"..ndef_name.."'.")
 end
 
-local plug = function (receiver, input, sender)
-  if ndefs[receiver] == nil then
-    print("receiver "..receiver.." not found...") 
-    return
-  elseif ndefs[sender] == nil then
-    print("sender "..sender.." not found...") 
-    return
-  end
-
-  engine.plug(receiver, input, sender)
-
-  ndefs[sender].outs = { rx=receiver, i=input }
-  ndefs[receiver].ins[input] = sender
-
-  print("plugged "..sender.." into "..receiver.."'s "..input..".")
+-- not sure what to do with this
+function create_shell(name)
+  engine.create_shell(name)
 end
+
 
 -- moved to repl
 --expose(draw, "draw")
 --expose_engine("set")
 --expose_engine("play")
+--expose_engine("plug")
+--expose(plug, "plug")
 
 --expose(list_events, "list_events")
 expose(play_by_index, "play_event")
 expose(wave, "wave")
 expose(redraw, "redraw")
-expose(plug, "plug")
---expose_engine("create_prime") -- hail? draw?
 expose_engine("lag")
 expose_engine("free")
---expose_engine("plug")
 
 return g
